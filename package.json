@@ -1,14 +1,13 @@
 {
-  "name": "test",
-  "version": "1.0.0",
-  "scripts": {
-	"start": "node app.js"  
-},
+ "name": "test",
+ "version": "1.0.0",
+ "scripts": {
+  "start": "node app.js"
+ },
  "dependencies": {
-	"body-parser": "^1.18.2",
-	"dotenv": "^4.0.0",
-	"express": "^4.16.2",
-	"mongoose": "^4.12.1"
+  "body-parser": "^1.18.2",
+  "dotenv": "^4.0.0",
+  "express": "^4.16.2",
+  "mongoose": "^4.13.18"
+ }
 }
-}
- 

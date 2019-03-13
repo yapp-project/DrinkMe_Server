@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Todo = require('../models/todo');
 
+
 // Find All
 router.get('/', (req, res) => {
   Todo.findAll()

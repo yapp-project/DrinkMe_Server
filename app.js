@@ -1,5 +1,6 @@
 // ENV
 require('dotenv').config();
+
 // DEPENDENCIES
 const express = require('express');
 const mongoose = require('mongoose');
@@ -23,10 +24,11 @@ mongoose.connect(process.env.MONGO_URI, { useMongoClient: true })
   .catch(e => console.error(e));
 
 
+// DEFINE MODEL
+var User = require('./models/user');
 
 // ROUTERS
-app.use('/todos', require('./routes/todos'));
-
+var router = require('./routes')(app, User);
 
 
 app.listen(port, () => console.log(`Server listening on port ${port}`));
