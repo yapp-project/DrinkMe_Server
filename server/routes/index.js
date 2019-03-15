@@ -22,12 +22,12 @@ module.exports = function(app, User)
     });
 
     // CREATE User
-    app.post('/api/users', function(req, res){
+    app.get('/api/users/join', function(req, res){
         var user = new User();
-	user.user_id = req.body.id;
-	user.user_pw = req.body.pw;
-	user.user_name = req.body.name;
-	user.signin_date = new Date(req.body.signin_date);
+	user.user_id = req.query.id;
+	user.user_pw = req.query.pw;
+	user.user_name = req.query.name;
+	user.signin_date = new Date(req.query.signin_date);
 
 	user.save(function(err) {
 		if(err) {
