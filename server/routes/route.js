@@ -20,6 +20,12 @@ router.post('/join', (req, res) => {
 	});
 });
 
+router.post('/user/join', (req,res) => {
+		User.create(req.body)
+			.then(user => res.send(user))
+			.catch(err => res.status(500).send(err));
+});
+
 router.get('/user', (req, res) => {
 	// GET ALL User
 	User.find(function(err, users) {
