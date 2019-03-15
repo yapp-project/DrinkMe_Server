@@ -6,9 +6,11 @@ DrinkMe Web Server
 
 - MongoDB
 - Express generator
+- Express jade
 - nodemon
 - dotenv
 - body-parser
+- 
 
 ## 참고 사이트
 
