@@ -10,7 +10,7 @@ router.get('/',(req,res) => {
 
 });
 
-router.post('/user', (req, res) => {
+router.post('/join', (req, res) => {
 	user.insert({ user_id: req.body.id, user_pw: req.body.pw, user_name: req.body.name }, (err, result) => {
 		if(err) {
 			return next(err);
