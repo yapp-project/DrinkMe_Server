@@ -27,6 +27,9 @@ router.post('/join', (req,res) => {
 			.catch(err => res.status(500).send(err));
 });
 
+router.post('/login', (req, res) => {
+})
+
 router.get('/user', (req, res) => {
 	// GET ALL User
 	User.find(function(err, users) {
@@ -48,12 +51,14 @@ router.get('/user/:userid',(req, res) => {
 	}); */
 });
 
+
 router.put('/user/:userid', (req, res) => {
     // UPDATE user
 	User.updateByUserid(req.params.userid, req.body)
 		.then(user => res.send(user))
 		.catch(err => res.status(500).send(err));
 });
+
 
 router.delete('/user/:userid', (req, res) => {
 	// DELETE user
