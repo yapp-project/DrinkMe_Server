@@ -12,7 +12,7 @@ router.get('/',(req,res) => {
 
 router.post('/join', (req, res) => {
 	// insert function 오류
-	User.insert([{ "user_id": req.body.id, "user_pw": req.body.pw, "user_name": req.body.name }], (err, result) => {
+	User.insert([{ "userid": req.body.id, "userpw": req.body.pw, "username": req.body.name }], (err, result) => {
 		if(err) {
 			return next(err);
 		}
