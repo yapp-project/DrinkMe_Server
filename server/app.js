@@ -29,7 +29,7 @@ mongoose.Promise = global.Promise;
 
 
 // CONNECT TO MONGODB SERVER (mongoose 5.x 이상만 지원)
-mongoose.connect(process.env.MONGO_URI, {useNewUrlParser:true})
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser:true, useCreateIndex: true})
   .then(() => console.log('Successfully connected to mongodb'))
   .catch(e => console.error(e));
 
