@@ -2,8 +2,7 @@ var mongoose = require('mongoose');
 
 var userSchema = new mongoose.Schema({
     userid: { type: String, required: true, unique: true },
-    username: { type: String, required: true },
-    userpw:  { type: String, required: true }
+    userpw: { type: String, required: true }
 });
 
 // Create new user Document

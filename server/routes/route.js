@@ -21,6 +21,8 @@ router.post('/err/join', (req, res) => {
 	});
 });
 */
+
+
 router.post('/join', (req,res) => {
 		User.create(req.body)
 			.then(user => res.send(user))
