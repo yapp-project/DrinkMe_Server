@@ -2,8 +2,9 @@ var mongoose = require('mongoose');
 
 var userSchema = new mongoose.Schema({
     userid: { type: String, required: true, unique: true },
-    userpw: { type: String, required: true }
-}, { versionKey: '_somethingElse' });
+    userpw: { type: String, required: true },
+    date : {type: Date, default: Date.now()}
+}, { versionKey: false });
 
 // Create new user Document
 userSchema.statics.create = function(payload) {
