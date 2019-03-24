@@ -22,7 +22,7 @@ router.post('/login', (req, res) => {
     User.find({"id": req.params.id, "passwords": req.params.password})
         .then((user) => {
             if (!user) return res.status(404).send({err: 'User not found'});
-            res.send('findOne successfully: ${user}');
+            res.send('find successfully! '+user);
         })
         .catch(err => res.status(500).send(err));
 });
