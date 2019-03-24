@@ -29,14 +29,24 @@ router.post('/login', (req, res) => {
 
 // 아이디 중복확인
 router.post('/check/id',(req,res) => {
-    User.countDocuments({id: req.params.id}, (err, count) => {
+
+	User.exists({id: req.params.id})
+		.then((userExists) => {
+			if(!userExists) return res.send({exist: 0});
+			else return res.send({exist: 1});
+		})
+		.catch(err => res.status(500).send(err));
+	/*    User.countDocuments({id: req.params.id}, (err, count) => {
         if (err) {
             res.send(err);
             return;
         }
         res.json({count: count});	//반환값 0/1
     })
+*/
 });
+
+
 
 // 개인정보
 router.post('/get/user',(req,res) => {
