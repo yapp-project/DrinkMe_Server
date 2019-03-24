@@ -29,12 +29,12 @@ router.post('/login', (req, res) => {
 
 // 아이디 중복확인
 router.post('/check/id',(req,res) => {
-    User.find({id: req.params.id}).count.exec((err, count) => {
+    User.find({id: req.params.id}).countDocuments.exec((err, count) => {
         if (err) {
             res.send(err);
             return;
         }
-        res.json({count: count});
+        res.json({count: count});	//반환값 0/1
     })
 });
 
