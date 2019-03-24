@@ -35,12 +35,6 @@ userSchema.statics.findAll = function() {
     return this.find({});
 };
 
-// Find ID
-userSchema.statics.findUser = function(userid) {
-
-    const count = new this.count({id: userid}, {limit: 1});
-    return count;
-};
 
 // Find User
 userSchema.statics.findUserForSignin = function(userid,userpw) {

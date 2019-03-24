@@ -20,17 +20,17 @@ router.post('/join', (req,res) => {
 // 로그인
 router.post('/login', (req, res) => {
     User.find({"id": req.params.id, "passwords": req.params.password})
-        .then((user) => {
-            if (!user) return res.status(404).send({err: 'User not found'});
-            res.send('find successfully! '+user);
+        .then((users) => {
+            if (!users) return res.status(404).send({err: 'User not found'});
+            res.send('find successfully! '+users);
         })
         .catch(err => res.status(500).send(err));
 });
 
 // 아이디 중복확인
 router.post('/check/id',(req,res) => {
-	User.findUser(req.params.id)
-		.then(count => res.send(count))
+	User.findOne({id: req.params.id})
+		.then(users => res.send(users))
 		.catch(err => res.status(500).send(err));
 	}
 )
@@ -114,8 +114,8 @@ router.get('/user', (req, res) => {
 router.get('/user/get/:userid',(req, res) => {
 	// GET One user
 	User.findOneByUserid(req.params.userid)
-		.then((user) => {
-			if(!user) return res.status(404).send({ err: 'User not found'});
+		.then((users) => {
+			if(!users) return res.status(404).send({ err: 'User not found'});
 			res.send('findOne successfully: ${user}');
 		})
 		.catch(err => res.status(500).send(err));
@@ -134,7 +134,7 @@ router.put('/user/update/:userid', (req, res) => {
 
 router.delete('/user/delete/:userid', (req,res) => {
 	// Delete User
-	User.deleteByUserid(req.params.id)
+	User.remove(req.params.id)
 		.then(()=> res.status(200))
 		.catch(err => res.status(500).send(err));
 });
