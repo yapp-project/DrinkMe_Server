@@ -29,7 +29,7 @@ router.post('/login', (req, res) => {
 
 // 아이디 중복확인
 router.post('/check/id',(req,res) => {
-    User.find({id: req.params.id}).countDocuments.exec((err, count) => {
+    User.countDocuments({id: req.params.id}, (err, count) => {
         if (err) {
             res.send(err);
             return;
