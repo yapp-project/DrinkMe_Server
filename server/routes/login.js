@@ -4,6 +4,7 @@ const User = require('../models/user.js');
 const crypto = require('crypto');
 
 
+// 로그인 회원가입 업그레이드 버전
 router.post('/signUp', (req, res) => {
     const user = new User();
 

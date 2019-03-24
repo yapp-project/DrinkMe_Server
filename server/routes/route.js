@@ -27,7 +27,13 @@ router.post('/login', (req, res) => {
         .catch(err => res.status(500).send(err));
 });
 
-
+// 아이디 중복확인
+router.post('/check/id',(req,res) => {
+	User.findUser(req.params.id)
+		.then(count => res.send(count))
+		.catch(err => res.status(500).send(err));
+	}
+)
 /*
 router.post('/login', (req, res) => {
         console.log('process/login 호출됨');

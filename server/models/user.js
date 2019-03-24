@@ -38,7 +38,8 @@ userSchema.statics.findAll = function() {
 // Find ID
 userSchema.statics.findUser = function(userid) {
 
-    return this.count({id: userid}, {limit: 1});
+    const count = new this.count({id: userid}, {limit: 1});
+    return count;
 };
 
 // Find User
