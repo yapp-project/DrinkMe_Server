@@ -24,8 +24,8 @@ app.set('view engine','pug');
 app.set('views', path.join(__dirname, 'html'));
 app.use(express.static(path.join(__dirname,'html')));
 
-app.use('/', route);
-app.use('/api',login);
+app.use('/api', route);
+app.use('/user', login);
 
 // Node.js의 native Promise 사용
 mongoose.Promise = global.Promise;
