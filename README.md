@@ -1,4 +1,4 @@
-# DrinkMe WEB TestServer
+# DrinkMe WEB Server
 
 DrinkMe Web Server
 
@@ -10,7 +10,10 @@ DrinkMe Web Server
 - nodemon
 - dotenv
 - body-parser
-- 
+
+## 개발작업
+
+- 김형준, 박지홍
 
 ## 참고 사이트
 
