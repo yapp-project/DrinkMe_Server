@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 // 유저 정보 스키마 정의
 var userSchema = new Schema({
-    id: {
+    userid: {
         type: String,
         required: true,
         index: true,
@@ -21,6 +21,7 @@ var userSchema = new Schema({
 }, { versionKey: false });
 
 
+
 // Create new user Document
 userSchema.statics.create = function(payload) {
     //this = model
@@ -29,36 +30,6 @@ userSchema.statics.create = function(payload) {
     return user.save();
 };
 
-// Find ALL
-userSchema.statics.findAll = function() {
-
-    return this.find({});
-};
-
-
-// Find User
-userSchema.statics.findUserForSignin = function(userid,userpw) {
-
-    return this.find({id: userid},{password: userpw});
-};
-
-// Find One by id
-userSchema.statics.findOneByUserid = function(userid) {
-
-    return this.findOne({id: userid});
-};
-
-// Update by id
-userSchema.statics.updateByUserid = function(userid, payload) {
-
-    return this.findOneAndUpdate({ userid }, payload, { new: true });
-};
-
-// Delete by id
-userSchema.statics.deleteByUserid = function(userid){
-
-    return this.remove({id:userid});
-};
 
 // Create model & export
 module.exports = mongoose.model('User', userSchema);

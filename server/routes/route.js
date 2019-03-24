@@ -19,7 +19,7 @@ router.post('/join', (req,res) => {
 
 // 로그인
 router.post('/login', (req, res) => {
-    User.find({"id": req.params.id, "passwords": req.params.password})
+    User.find({userid: req.params.id, passwords: req.params.password})
         .then((users) => {
             if (!users) return res.status(404).send({err: 'User not found'});
             res.send('find successfully!'+users);
@@ -30,7 +30,7 @@ router.post('/login', (req, res) => {
 // 아이디 중복확인
 router.post('/check/id',(req,res) => {
 
-	User.exists({id: req.params.id})
+	User.where('id', req.params.id).countDocuments()
 		.then((userExists) => {
 			if(!userExists) return res.send({exist: 0});
 			else return res.send({exist: 1});
@@ -50,7 +50,7 @@ router.post('/check/id',(req,res) => {
 
 // 개인정보
 router.post('/get/user',(req,res) => {
-        User.findOne({id: req.params.id})
+        User.findOne({userid: req.params.id})
             .then(users => res.send(users))
             .catch(err => res.status(500).send(err));
     }
