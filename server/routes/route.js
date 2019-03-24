@@ -29,14 +29,14 @@ router.post('/login', (req, res) => {
 
 // 아이디 중복확인
 router.post('/check/id',(req,res) => {
-	User.count({id: req.params.id}).exec((err,count) => {
-		if(err) {
-			res.send(err);
-			return;
-		}
-		res.json({count: count});
-	})
-)
+    User.count({id: req.params.id}).exec((err, count) => {
+        if (err) {
+            res.send(err);
+            return;
+        }
+        res.json({count: count});
+    })
+});
 
 // 개인정보
 router.post('/get/user',(req,res) => {
