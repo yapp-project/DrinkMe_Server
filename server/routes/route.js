@@ -29,10 +29,13 @@ router.post('/login', (req, res) => {
 
 // 아이디 중복확인
 router.post('/check/id',(req,res) => {
-	User.countDocuments({id: req.params.id})
-		.then(count => res.send(count[0].id.toString))	// res 인자값은 Buffer object, String, object, Array만 가능
-		.catch(err => res.status(500).send(err));
-	}
+	User.count({id: req.params.id}).exec((err,count) => {
+		if(err) {
+			res.send(err);
+			return;
+		}
+		res.json({count: count});
+	})
 )
 
 // 개인정보

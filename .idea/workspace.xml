@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="a03c57e2-e7ef-4389-8986-1e48357cefc3" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/routes/route.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/routes/route.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -42,14 +41,14 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="html" value="417" />
-          <entry key="js" value="4161" />
+          <entry key="js" value="4192" />
           <entry key="txt" value="127" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="HTML" value="417" />
-          <entry key="JavaScript" value="4161" />
+          <entry key="JavaScript" value="4192" />
           <entry key="PLAIN_TEXT" value="127" />
         </counts>
       </usages-collector>
@@ -87,8 +86,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/routes/route.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="456">
-              <caret line="42" column="5" lean-forward="true" selection-start-line="42" selection-start-column="5" selection-end-line="42" selection-end-column="5" />
+            <state relative-caret-position="437">
+              <caret line="32" column="41" selection-start-line="32" selection-start-column="41" selection-end-line="32" selection-end-column="41" />
             </state>
           </provider>
         </entry>
@@ -194,7 +193,7 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553410362512" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553411173450" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -239,7 +238,7 @@
       <workItem from="1553316082848" duration="3032000" />
       <workItem from="1553349978810" duration="1089000" />
       <workItem from="1553388249088" duration="7041000" />
-      <workItem from="1553396943692" duration="7915000" />
+      <workItem from="1553396943692" duration="8622000" />
     </task>
     <task id="LOCAL-00001" summary="login">
       <created>1553393606678</created>
@@ -252,7 +251,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="30818000" />
+    <option name="totallyTimeSpent" value="31525000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -264,10 +263,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="845" y="0" width="1074" height="1160" extended-state="0" />
+    <frame x="465" y="0" width="1454" height="1160" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.23767258" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1728838" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -356,8 +355,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/routes/route.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="456">
-          <caret line="42" column="5" lean-forward="true" selection-start-line="42" selection-start-column="5" selection-end-line="42" selection-end-column="5" />
+        <state relative-caret-position="437">
+          <caret line="32" column="41" selection-start-line="32" selection-start-column="41" selection-end-line="32" selection-end-column="41" />
         </state>
       </provider>
     </entry>
