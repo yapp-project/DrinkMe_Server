@@ -9,6 +9,8 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000; // .env 파일
 const route = require('./routes/route.js');
+const login = require('./routes/login.js');
+
 
 // Static File Service
 app.use(express.static('public'));
@@ -23,6 +25,7 @@ app.set('views', path.join(__dirname, 'html'));
 app.use(express.static(path.join(__dirname,'html')));
 
 app.use('/', route);
+app.use('/api',login);
 
 // Node.js의 native Promise 사용
 mongoose.Promise = global.Promise;

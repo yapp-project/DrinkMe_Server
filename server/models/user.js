@@ -1,13 +1,13 @@
 var mongoose = require('mongoose');
-
+var Schema = mongoose.Schema;
 
 // 유저 정보 스키마 정의
-var userSchema = new mongoose.Schema({
+var userSchema = new Schema({
     id: {
         type: String,
         required: true,
         index: true,
-        match:/([A-Z]|[a-z]|[가-힣])\w+/,
+        match:/([A-Z]|[a-z]|[가-힣]|[0-9])\w+/,
         unique: true },
     password: {
         type: String,
@@ -17,7 +17,7 @@ var userSchema = new mongoose.Schema({
             },
             'Password should be longer'
         ]},
-    date : {  type: Date, default: Date.now()  }
+    create_date : {  type: Date, default: Date.now()  }
 }, { versionKey: false });
 
 
