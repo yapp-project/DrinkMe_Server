@@ -22,7 +22,7 @@ router.post('/login', (req, res) => {
     User.find({"id": req.params.id, "passwords": req.params.password})
         .then((users) => {
             if (!users) return res.status(404).send({err: 'User not found'});
-            res.send('find successfully! '+users);
+            res.send('find successfully!'+users);
         })
         .catch(err => res.status(500).send(err));
 });
@@ -30,13 +30,13 @@ router.post('/login', (req, res) => {
 // 아이디 중복확인
 router.post('/check/id',(req,res) => {
 	User.countDocuments({id: req.params.id})
-		.then(count => res.send(count))
+		.then(count => res.send(count[0].id.toString))	// res 인자값은 Buffer object, String, object, Array만 가능
 		.catch(err => res.status(500).send(err));
 	}
 )
 
 // 개인정보
-router.post('/check/id',(req,res) => {
+router.post('/get/user',(req,res) => {
         User.findOne({id: req.params.id})
             .then(users => res.send(users))
             .catch(err => res.status(500).send(err));
