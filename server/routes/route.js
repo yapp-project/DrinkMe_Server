@@ -29,8 +29,8 @@ router.post('/login', (req, res) => {
 
 // 아이디 중복확인
 router.post('/check/id',(req,res) => {
-	User.count({id: req.params.id})
-		.then(users => res.send(users))
+	User.countDocuments({id: req.params.id})
+		.then(count => res.send(count))
 		.catch(err => res.status(500).send(err));
 	}
 )
