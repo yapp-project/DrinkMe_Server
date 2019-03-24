@@ -11,9 +11,9 @@ router.post('/signUp', (req, res) => {
     user.password = req.body.password;
 
     //encryption
-    let cipher = crypto.createCipher('aes192', 'key');
-    cipher.update(user.password, 'utf8', 'base64');
-    let cipheredOutput = cipher.final('base64');
+    let cipher = crypto.createCipher('aes256', 'password');
+    cipher.update(user.password, 'ascii', 'hex');
+    let cipheredOutput = cipher.final('hex');
     user.password = cipheredOutput;
 
     /*
