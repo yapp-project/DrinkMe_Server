@@ -19,7 +19,7 @@ router.post('/join', (req,res) => {
 
 // 로그인
 router.post('/login', (req, res) => {
-    User.find({"userid": req.params.id, "password": req.params.password})
+    User.find({"userid": req.params.userid, "password": req.params.password})
         .then((users) => {
             if (!users) return res.status(404).send({err: 'User not found'});
             res.send('find successfully!'+users);
