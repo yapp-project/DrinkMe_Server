@@ -30,20 +30,13 @@ router.post('/login', (req, res) => {
 // 아이디 중복확인
 router.post('/check/id',(req,res) => {
 
-	User.where('id', req.params.id).countDocuments()
-		.then((userExists) => {
-			if(!userExists) return res.send({exist: 0});
-			else return res.send({exist: 1});
-		})
-		.catch(err => res.status(500).send(err));
-	/*    User.countDocuments({id: req.params.id}, (err, count) => {
+	User.countDocuments({id: req.params.id}, (err, count) => {
         if (err) {
             res.send(err);
             return;
         }
         res.json({count: count});	//반환값 0/1
     })
-*/
 });
 
 
