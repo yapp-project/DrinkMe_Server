@@ -43,7 +43,7 @@ router.post('/check/id',(req,res) => {
 
 // 개인정보
 router.post('/get/user',(req,res) => {
-        User.findOne({userid: req.params.id})
+        User.findOne({userid: req.params.userid})
             .then(users => res.send(users))
             .catch(err => res.status(500).send(err));
     }
