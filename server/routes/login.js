@@ -4,7 +4,7 @@ const User = require('../models/user.js');
 const crypto = require('crypto');
 
 
-router.post('/signUp', (req, res, next) => {
+router.post('/signUp', (req, res) => {
     const user = new User();
 
     user.id = req.body.id;
@@ -35,7 +35,7 @@ router.post('/signUp', (req, res, next) => {
 });
 
 //checkLogin
-router.post('/checkLogin', function(req, res, next) {
+router.post('/checkLogin', function(req, res) {
     //DB에 암호화 하여 저장하였으니 DB에서 확인할때도 암호화 된 키로 확인한다
     let  cipher = crypto.createCipher('aes192', 'key');
     cipher.update(req.body.password,'utf8', 'base64');
