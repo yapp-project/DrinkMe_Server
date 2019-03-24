@@ -19,7 +19,7 @@ router.post('/join', (req,res) => {
 
 // 로그인
 router.post('/login', (req, res) => {
-    User.find({userid: req.params.id, passwords: req.params.password})
+    User.find({"userid": req.params.id, "password": req.params.password})
         .then((users) => {
             if (!users) return res.status(404).send({err: 'User not found'});
             res.send('find successfully!'+users);
@@ -30,7 +30,7 @@ router.post('/login', (req, res) => {
 // 아이디 중복확인
 router.post('/check/id',(req,res) => {
 
-	User.countDocuments({id: req.params.id}, (err, count) => {
+	User.countDocuments({"id": req.params.id}, (err, count) => {
         if (err) {
             res.send(err);
             return;
@@ -48,72 +48,7 @@ router.post('/get/user',(req,res) => {
             .catch(err => res.status(500).send(err));
     }
 )
-/*
-router.post('/login', (req, res) => {
-        console.log('process/login 호출됨');
-        let paramID = req.body.id || req.query.id;
-        let paramPW = req.body.password || req.query.password;
-        console.log('paramID : ' + paramID + ', paramPW : ' + paramPW);
-        authUser(database, paramID, paramPW, function (err, docs) {
-                    if (database) {
-                        if (err) {
-                            console.log('Error!!!');
-                            res.writeHead(200, { "Content-Type": "text/html;characterset=utf8" });
-                            res.write('<h1>에러발생</h1>');
-                            res.end();
-                            return;
-                        }
 
-                        if (docs) {
-                            console.dir(docs);
-                            res.writeHead(200, { "Content-Type": "text/html;characterset=utf8" });
-                            res.write('<h1>Login Success</h1>');
-                            res.write('<h1> user </h1>' + docs[0].id + '  :   ' + docs[0].name);
-                            res.write('<br><a href="/login.html"> re login </a>');
-                            res.end();
-                        }
-                        else {
-                            console.log('empty Error!!!');
-                            res.writeHead(200, { "Content-Type": "text/html;characterset=utf8" });
-                            res.write('<h1>user data not exist</h1>');
-                            res.write('<a href="/login.html"> re login</a>');
-                            res.end();
-                        }
-                    }
-                    else {
-                        console.log('DB 연결 안됨');
-                        res.writeHead(200, { "Content-Type": "text/html;characterset=utf8" });
-                        res.write('<h1>databasae 연결 안됨</h1>');
-                        res.end();
-                    }
-                }
-            );
-    }
-);
-
-// 회원정보 확인
-const authUser = function (db, id, password, callback) {
-    console.log('input id :' + id.toString() + '  :  pw : ' + password);
-    User.find({ "id": id, "passwords": password },
-        function (err, docs)
-        {
-            if (err) {
-                callback(err, null);
-                return;
-            }
-
-            if (docs.length > 0) {
-                console.log('find user [ ' + docs + ' ]');
-                callback(null, docs);
-            }
-            else {
-                console.log('can not find user [ ' + docs + ' ]');
-                callback(null, null);
-            }
-        }
-    );
-};
-*/
 
 // 모든 유저 정보
 router.get('/user', (req, res) => {
