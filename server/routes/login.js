@@ -50,3 +50,5 @@ router.post('/checkLogin', function(req, res) {
         res.json(user);
     })
 });
+
+module.exports = router;
