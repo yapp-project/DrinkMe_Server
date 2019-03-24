@@ -29,10 +29,18 @@ router.post('/login', (req, res) => {
 
 // 아이디 중복확인
 router.post('/check/id',(req,res) => {
-	User.findOne({id: req.params.id})
+	User.count({id: req.params.id})
 		.then(users => res.send(users))
 		.catch(err => res.status(500).send(err));
 	}
+)
+
+// 개인정보
+router.post('/check/id',(req,res) => {
+        User.findOne({id: req.params.id})
+            .then(users => res.send(users))
+            .catch(err => res.status(500).send(err));
+    }
 )
 /*
 router.post('/login', (req, res) => {
