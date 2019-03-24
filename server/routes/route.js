@@ -119,16 +119,16 @@ router.get('/user/get/:userid',(req, res) => {
 });
 
 
-router.post('/user/update/:userid', (req, res) => {
+router.put('/user/update/:userid', (req, res) => {
     // UPDATE user
-	User.updateByUserid(req.params.userid, req.body)
+	User.updateByUserid(req.params.id, req.body)
 		.then(user => res.send(user))
 		.catch(err => res.status(500).send(err));
 });
 
 router.delete('/user/delete/:userid', (req,res) => {
 	// Delete User
-	User.deleteByUserid(req.params.userid)
+	User.deleteByUserid(req.params.id)
 		.then(()=> res.status(200))
 		.catch(err => res.status(500).send(err));
 });
