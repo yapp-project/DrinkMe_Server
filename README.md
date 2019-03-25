@@ -1,4 +1,4 @@
-# DrinkMe WEB TestServer
+# DrinkMe WEB Server
 
 DrinkMe Web Server
 
@@ -10,7 +10,29 @@ DrinkMe Web Server
 - nodemon
 - dotenv
 - body-parser
-- 
+
+## Developer
+
+- 김형준, 박지홍
+
+## How to install
+
+```$
+$ git clone https://github.com/yapp-project/Drinkme_server.git
+$ cd server
+$ npm install
+//You have to create '.env' and setting PORT, MONGo_URI (in app.js)
+```
+
+## How to run
+
+```$
+// or node app.js
+$ npm start 
+```
+
+and enter to `localhost:3000`
+
 
 ## 참고 사이트
 
