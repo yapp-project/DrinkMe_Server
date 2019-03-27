@@ -2,18 +2,20 @@
 
 DrinkMe Web Server
 
+
 ## Skill Stacks
 
 - MongoDB
+- Mongoose
 - Express generator
-- Express jade
-- nodemon
 - dotenv
 - body-parser
+
 
 ## Developer
 
 - 김형준, 박지홍
+
 
 ## How to install
 
@@ -21,17 +23,17 @@ DrinkMe Web Server
 $ git clone https://github.com/yapp-project/Drinkme_server.git
 $ cd server
 $ npm install
-//You have to create '.env' and setting PORT, MONGo_URI (in app.js)
 ```
+After you have to create '.env' and setting PORT, MONGo_URI (in app.js)
+
 
 ## How to run
 
 ```$
-// or node app.js
 $ npm start 
 ```
-
-and enter to `localhost:3000`
+Or, You can use node app.js
+and enter to `localhost:YOUR_PORT`
 
 
 ## 참고 사이트
