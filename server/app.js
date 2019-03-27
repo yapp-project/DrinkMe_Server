@@ -8,7 +8,8 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000; // .env 파일
-const route = require('./routes/user.js');
+const route_user = require('./routes/user.js');
+const route_recipe = require('./routes/recipe.js');
 //const login = require('./routes/login.js');
 
 
@@ -24,7 +25,8 @@ app.set('view engine','pug');
 app.set('views', path.join(__dirname, 'html'));
 app.use(express.static(path.join(__dirname,'html')));
 
-app.use('/user', route);
+app.use('/user', route_user);
+app.use('/recipe',route_recipe);
 //app.use('/user', login);
 
 // Node.js의 native Promise 사용
