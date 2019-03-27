@@ -9,15 +9,23 @@ route_recipe.get('/', (req,res) => {
     res.json('connect Succesful : recipe');
 });
 
+// get all recipes
+route_recipe.get('/recipe', (req,res) =>{
+    Recipe.find(function(err, recipes) {
+        if(err) return res.status(500).send({error: 'get recipes fail'});
+        res.json(recipes);
+    })
+})
+
 // recipe register
 route_recipe.post('/recipe', (req,res) => {
     Recipe.create(req.body)
         .then(recipe => res.send(recipe))
         .catch(err => res.status(500).send(err));
 
-    Tag.create(req.body.tag)
-        .then(tag => res.send(tag))
-        .catch(err => res.status(500).send(err));
+   // Tag.create(req.body.tag)
+     //   .then(tag => res.send(tag))
+       // .catch(err => res.status(500).send(err));
 });
 
 // recipe search by tag order by view
