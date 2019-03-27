@@ -39,7 +39,8 @@ mongoose.connect(process.env.MONGO_URI, {useNewUrlParser:true, useCreateIndex: t
 
 // DEFINE MODEL
 var User = require('./models/user');
-
+var Recipe = require('./models/recipe');
+var Tag = require('./models/tag');
 
 app.listen(port, () => console.log(`Server listening on port ${port}`));
 
