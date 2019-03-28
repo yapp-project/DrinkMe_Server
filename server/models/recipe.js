@@ -24,6 +24,7 @@ let recipeSchema = new Schema({
   description : String,
   tag : [{ type : String, index : true }],
   ingredient : [{type : ingredientSchema}],
+ // ingredient : [ { name : {type:String}, color : {type : String}, ml: {type:Number}}],
   image : imageSchema,
   created_date : { type : Date, default : Date.now },
   owner : { type : String },
