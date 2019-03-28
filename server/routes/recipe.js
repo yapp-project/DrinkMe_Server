@@ -29,43 +29,51 @@ route_recipe.post('/recipe', (req,res) => {
 });
 
 // recipe search by tag order by view
-route_recipe.get('/recipe/tagv/:tag', (req,res) => {
-    Recipe.find({
-        tag : { $in : req.tag }
-    })
+route_recipe.get('/recipe/tagv/', (req,res) => {
+    Recipe.find({'tag' :  req.body.tag})
+    .sort({view:-1})
     .limit(10)
-    .sort({ view: 1})
-    .catch(err => res.status(500).send(err));
+    .exec((err, recipes)=>{
+        if( err) return res.status(500).send(err)
+        return res.status(200).send(recipes)
+    })
 });
 
 // recipe search by tag order by new
-route_recipe.get('/recipe/tagn/:tag', (req,res)=>{
-    Recipe.find({
-        tag : { $in : req.tag }
-    })
+route_recipe.get('/recipe/tagn/', (req,res)=>{
+    Recipe.find({'tag' : req.body.tag})
+    .sort({created_date:-1})
     .limit(10)
-    .sort({ created_date : -1 })
-    .catch(err => res.status(500).send(err));
+    .exec((err, recipes)=>{
+        if(err) return res.status(500).send(err)
+        return res.status(200).send(recipes)
+    })
 });
 
 // recipe search by ingredient order by view
-route_recipe.get('/recipe/ingredientv/:ingredient', (req,res)=>{
+route_recipe.get('/recipe/ingredientv/', (req,res)=>{
     Recipe.find({
-        ingredient : { $in : req.ingredient }
+        'ingredient.name' : { $all : req.body.ingredient }
     })
     .limit(10)
-    .sort({ view : 1 })
-    .catch(err => res.status(500).send(err));
+    .sort({ view : -1 })
+    .exec((err, recipes)=>{
+        if(err) return res.status(500).send(err)
+        return res.status(200).send(recipes)
+    })
 });
 
 // recipe search by ingredient order by new
-route_recipe.get('/recipe/ingredientn/:ingredient', (req,res)=>{
+route_recipe.get('/recipe/ingredientn/', (req,res)=>{
     Recipe.find({
-        ingredient : { $in : req.ingredient }
+        'ingredient.name' : { $all : req.body.ingredient }
     })
     .limit(10)
-    .sort({ created_date: -1 })
-    .catch(err => res.status(500).send(err));
+    .sort({ created_date: -1})
+    .exec((err, recipes) =>{
+        if(err) return res.status(500).send(err)
+        return res.status(200).send(recipes)
+    })
 });
 
 // tag random select
