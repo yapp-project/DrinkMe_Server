@@ -17,15 +17,27 @@ route_recipe.get('/recipe', (req,res) =>{
     })
 })
 
+// get all tags
+route_recipe.get('/tag', (req,res) => {
+    Tag.find( (err, tags) => {
+        if(err) return res.status(500).send({error: 'get tags fail'});
+        res.json(tags);
+    })
+})
 // recipe register
 route_recipe.post('/recipe', (req,res) => {
-    Recipe.create(req.body)
+    const tmp = req;
+    Recipe.create(tmp.body)
         .then(recipe => res.send(recipe))
         .catch(err => res.status(500).send(err));
-
-   // Tag.create(req.body.tag)
-     //   .then(tag => res.send(tag))
-       // .catch(err => res.status(500).send(err));
+    
+    Tag.insertMany(tmp.body.tag[0], (err, nTag) =>{
+        if(err) return res.status(500).send({error: 'err'});
+        res.json(nTag);
+    })
+    //Tag.create(req.body.tag)
+      //  .then(tag => res.send(tag))
+        //.catch(err => res.status(500).send(err));
 });
 
 // recipe search by tag order by view
