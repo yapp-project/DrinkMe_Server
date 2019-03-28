@@ -27,13 +27,18 @@ route_recipe.get('/tag', (req,res) => {
 // recipe register
 route_recipe.post('/recipe', (req,res) => {
     const tmp = req;
+    let tmp2;
     Recipe.create(tmp.body)
+        .then( recipe => tmp2 = recipe )
         .then(recipe => res.send(recipe))
         .catch(err => res.status(500).send(err));
-    
-    Tag.insertMany(tmp.body.tag[0], (err, nTag) =>{
+    let tmp3 = JSON.stringify(req.body.tag).replace('[', '').replace(']','')
+    .replace('\\','').split(',')
+                .map((s)=>{return JSON.parse('{"tag" : '+s+'}')});
+    Tag.insertMany(tmp3 , (err, nTag) =>{
         if(err) return res.status(500).send({error: 'err'});
-        res.json(nTag);
+     //   res.send(tmp2)
+       // res.send(nTag)
     })
     //Tag.create(req.body.tag)
       //  .then(tag => res.send(tag))

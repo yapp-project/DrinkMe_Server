@@ -5,7 +5,7 @@ let Schema = mongoose.Schema;
 
 let tagSchema = new Schema({
   tag : { type : String, required : true, }
-})
+},{ versionKey : false})
 
 
 module.exports = mongoose.model('Tag', tagSchema)
