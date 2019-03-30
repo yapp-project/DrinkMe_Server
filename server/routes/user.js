@@ -1,8 +1,6 @@
 var express = require('express');
 var route_user = express.Router();
 var User = require('../models/user.js');
-const cors = require('cors');
-app.use(cors());
 
 // 연결 확인
 route_user.get('/',(req,res) => {
