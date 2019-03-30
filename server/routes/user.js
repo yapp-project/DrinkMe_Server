@@ -12,8 +12,8 @@ route_user.get('/',(req,res) => {
 // 회원가입 (성공)
 route_user.post('/join', (req,res) => {
 		User.create(req.body)
-			.then(user => res.send({success: 1}))
-			.catch(err => res.status(500).send(err));
+			.then(user => res.send(true))
+			.catch(err => res.status(500).send(false));
 });
 
 // 아이디 중복확인 (성공)
@@ -21,10 +21,10 @@ route_user.post('/join/check/id',(req,res) => {
 
 	User.countDocuments({userid:req.body.userid})
 		.then((count) => {
-    	    if (count!=0) return res.status(404).send({ count : 1 });
-    		res.send({ count : 0 });
+    	    if (count!=0) return res.status(404).send(true);
+    		res.send(false);
 		})
-        .catch(err => res.status(500).send(err));
+        .catch(err => res.status(500).send(false));
 });
 
 // 로그인 (성공) ===> user 비어있을 때 값처리 다시 한 번 해봐야함
@@ -32,10 +32,10 @@ route_user.post('/login', (req, res) => {
     console.log(req.body);
     User.find({userid: req.body.userid, password: req.body.password})
         .then((users) => {
-            if (!users.length) return res.status(404).send({ auth : 0 });
-            res.send({ auth : 1 });
+            if (!users.length) return res.status(404).send(false);
+            res.send(true);
         })
-        .catch(err => res.status(500).send(err));
+        .catch(err => res.status(500).send(false));
 });
 
 
@@ -44,9 +44,9 @@ route_user.post('/get/indv',(req,res) => {
     console.log(req.body);
         User.findOne({userid: req.body.userid})
             .then(users => res.send(users))
-            .catch(err => res.status(500).send(err));
+            .catch(err => res.status(500).send(false));
     }
-)
+);
 
 // 모든 유저 정보 (성공)
 route_user.get('/get/all', (req, res) => {
