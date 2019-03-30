@@ -16,7 +16,7 @@ var userSchema = new Schema({
         type: String,
         match:/^[a-z|A-Z|0-9|_|@]+$/,
         minlength:8,
-        maxlength:30
+        maxlength:50
         },
     create_date : {  type: Date, default: Date.now()  }
 }, { versionKey: false });
