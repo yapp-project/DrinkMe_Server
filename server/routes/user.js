@@ -1,6 +1,8 @@
 var express = require('express');
 var route_user = express.Router();
 var User = require('../models/user.js');
+const cors = require('cors');
+app.use(cors());
 
 // 연결 확인
 route_user.get('/',(req,res) => {
@@ -12,7 +14,7 @@ route_user.get('/',(req,res) => {
 // 회원가입 (성공)
 route_user.post('/join', (req,res) => {
 		User.create(req.body)
-			.then(user => res.send(user))
+			.then(user => res.send({success: 1}))
 			.catch(err => res.status(500).send(err));
 });
 
@@ -57,16 +59,37 @@ route_user.get('/get/all', (req, res) => {
 	})
 });
 
-route_user.put('/user/update/:userid', (req, res) => {
+// 유저 확인
+const auth_check = function(req, res) {
+	// 로그인이랑 똑같음
+	console.log(req);
+	User.find({userid: req.userid, password: req.password})
+		.then((users) => {
+			console.log(users);
+			if (!users.length) return ({ auth : 0 });
+			return { auth : 1 };
+		});
+};
+
+// 비밀번호 변경
+route_user.post('/update/password', (req, res) => {
     // UPDATE user
-	User.updateByUserid(req.params.id, req.body)
-		.then(user => res.send(user))
-		.catch(err => res.status(500).send(err));
+	var auth = auth_check(req.body);
+	if(auth) {
+		var query = {'password': req.body.password };
+		req.newData.password = req.body.newpassword;
+		User.findOneAndUpdate(query, req.newData, {upsert: true}, function (err, doc) {
+			if (err) return res.send(500, {error: err});
+			return res.send("succesfully saved");
+		});
+	}
+	else return res.send("fail");
 });
 
-route_user.delete('/user/delete/:userid', (req,res) => {
+// 회원 탈퇴
+route_user.delete('/delete/account', (req,res) => {
 	// Delete User
-	User.remove(req.params.userid)
+	User.deleteOne({'userid':req.params.userid})
 		.then(()=> res.status(200))
 		.catch(err => res.status(500).send(err));
 });
