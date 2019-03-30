@@ -1,6 +1,7 @@
 var express = require('express');
 var route_user = express.Router();
 var User = require('../models/user.js');
+var crypto = require('crypto');
 
 // 연결 확인
 route_user.get('/',(req,res) => {
@@ -14,6 +15,30 @@ route_user.post('/join', (req,res) => {
 		User.create(req.body)
 			.then(user => res.send(true))
 			.catch(err => res.status(500).send(false));
+});
+
+// 회원가입 (암호화)
+route_user.post('/test/join', (req,res) => {
+
+	const user = new User();
+
+	user.userid = req.body.userid;
+	user.password = req.body.password;
+
+	//encryption
+	let cipher = crypto.createCipher('aes256', 'password');
+	cipher.update(user.password, 'ascii', 'hex');
+	let cipheredOutput = cipher.final('hex');
+	user.password = cipheredOutput;
+
+	user.save(function(err){
+		if(err){
+			console.error(err);
+			res.json(false);
+			return;
+		}
+		res.json(true);
+	});
 });
 
 // 아이디 중복확인 (성공)
