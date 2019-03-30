@@ -7,7 +7,7 @@ var userSchema = new Schema({
         type: String,
         required: true,
         index: true,
-        match:/([A-Z]|[a-z]|[가-힣]|[0-9])\w+/,
+        match:/^[가-힣|a-z|A-Z|0-9|_]+$/,
         unique: true
         //minlength:, maxlength:
     },
