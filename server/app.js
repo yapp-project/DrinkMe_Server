@@ -11,6 +11,7 @@ const cors = require('cors');
 const port = process.env.PORT || 9000; // .env 파일
 const route_user = require('./routes/user.js');
 const route_recipe = require('./routes/recipe.js');
+const crypto = require('crypto');
 //const login = require('./routes/login.js');
 
 
@@ -28,7 +29,6 @@ app.use(express.static(path.join(__dirname,'html')));
 
 // CORS 설정
 app.use(cors());
-
 app.use('/user', route_user);
 app.use('/recipe',route_recipe);
 //app.use('/user', login);
