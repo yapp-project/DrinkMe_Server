@@ -17,7 +17,8 @@ route_user.post('/join', (req,res) => {
 });
 
 // 아이디 중복확인 (성공)
-route_user.post('/check/id',(req,res) => {
+route_user.post('/join/check/id',(req,res) => {
+
 	User.countDocuments({userid:req.body.userid})
 		.then((count) => {
     	    if (count!=0) return res.status(404).send({ count : 1 });
@@ -39,7 +40,7 @@ route_user.post('/login', (req, res) => {
 
 
 // 개인정보 (성공)
-route_user.post('/get/user',(req,res) => {
+route_user.post('/get/indv',(req,res) => {
     console.log(req.body);
         User.findOne({userid: req.body.userid})
             .then(users => res.send(users))
@@ -48,7 +49,7 @@ route_user.post('/get/user',(req,res) => {
 )
 
 // 모든 유저 정보 (성공)
-route_user.get('/user', (req, res) => {
+route_user.get('/get/all', (req, res) => {
 	// GET ALL User
 	User.find(function(err, users) {
 		if(err) return res.status(500).send({error: 'database failure'});
