@@ -57,39 +57,39 @@ route_user.get('/get/all', (req, res) => {
 	})
 });
 
-// 유저 확인
-const auth_check = function(req, res) {
-	// 로그인이랑 똑같음
+async function check_auth (req) {
 	console.log(req);
-	User.find({userid: req.userid, password: req.password})
-		.then((users) => {
-			console.log(users);
-			if (!users.length) return ({ auth : 0 });
-			return { auth : 1 };
-		});
+	User.find({userid: req.userid, password: req.password}, function (users) {
+		if (!users) return false;
+		return true;
+	});
 };
 
-// 비밀번호 변경
+// 비밀번호 변경 (성공)
 route_user.post('/update/password', (req, res) => {
     // UPDATE user
-	var auth = auth_check(req.body);
+	var auth = check_auth(req.body);
 	if(auth) {
 		var query = {'password': req.body.password };
-		req.newData.password = req.body.newpassword;
-		User.findOneAndUpdate(query, req.newData, {upsert: true}, function (err, doc) {
-			if (err) return res.send(500, {error: err});
-			return res.send("succesfully saved");
+		newData = {$set:{password: req.body.newpassword}};
+		User.updateOne(query, newData, {runValidators: true, upsert: true}, function (err, doc) { 	// runValidators : 기존 스키마 인덱스를 유지하게 도와줌
+			if (err) return res.send(500, false);
+			return res.send(true);
 		});
 	}
-	else return res.send("fail");
+	else return res.send(false);
 });
 
-// 회원 탈퇴
-route_user.delete('/delete/account', (req,res) => {
+// 회원 탈퇴 ( X )
+route_user.post('/delete/account', (req,res) => {
 	// Delete User
-	User.deleteOne({'userid':req.params.userid})
-		.then(()=> res.status(200))
-		.catch(err => res.status(500).send(err));
+	var auth = check_auth(req.body);
+	if(auth) {
+		User.remove({'userid': req.body.userid})
+			.then(() => res.status(true))
+			.catch(err => res.status(500).send(false));
+	}
+	else return res.send(false);
 });
 
 
