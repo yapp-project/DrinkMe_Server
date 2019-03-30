@@ -7,10 +7,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
-<<<<<<< HEAD
-=======
 const cors = require('cors');
->>>>>>> 7c3d7e0654ffa7ab76922635ab72edb98126f706
 const port = process.env.PORT || 9000; // .env 파일
 const route_user = require('./routes/user.js');
 const route_recipe = require('./routes/recipe.js');
