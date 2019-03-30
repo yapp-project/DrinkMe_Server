@@ -7,18 +7,18 @@ var userSchema = new Schema({
         type: String,
         required: true,
         index: true,
-        match:/^[가-힣|a-z|A-Z|0-9|_]+$/,
-        unique: true
-        //minlength:, maxlength:
+        match:/^[가-힣|a-z|A-Z|0-9|_|@]+$/,
+        unique: true,
+        minlength:1,
+        maxlength:20
     },
     password: {
         type: String,
-        valid: [
-            function(password){
-                return password.length>=8;
-            },
-            'Password should be longer'
-        ]},
+        match:/^[a-z|A-Z|0-9|_|@]+$/,
+        unique: true,
+        minlength:8,
+        maxlength:30
+        },
     create_date : {  type: Date, default: Date.now()  }
 }, { versionKey: false });
 
@@ -32,38 +32,7 @@ userSchema.statics.create = function(payload) {
     return user.save();
 };
 
-// Find All
-userSchema.statics.findAll = function () {
-    // return promise
-    // V4부터 exec() 필요없음
-    return this.find({});
-};
-
-// Find One by userID
-userSchema.statics.findOneByUserid = function (userid) {
-    return this.findOne({ userid });
-};
-
-// id Check
-userSchema.statics.checkId = function (userid) {
-
-    const countQuery = this.where({ userid }).countDocuments();
-    console.log(countQuery);
-    return countQuery;
-};
-
-// id Check
-userSchema.statics.checkAuth = function (userid) {
-    return this.countDocuments({ userid });
-};
-
-// Update by todoid
-userSchema.statics.updateByUserid = function (userid, payload) {
-    // { new: true }: return the modified document rather than the original. defaults to false
-    return this.findOneAndUpdate({ userid }, payload, { new: true, useFindAndModify:false });
-};
-
-// Delete by todoid
+// Delete
 userSchema.statics.deleteByUserid = function (userid) {
     return this.remove({ userid });
 };
