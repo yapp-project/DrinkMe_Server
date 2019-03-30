@@ -15,7 +15,6 @@ var userSchema = new Schema({
     password: {
         type: String,
         match:/^[a-z|A-Z|0-9|_|@]+$/,
-        unique: true,
         minlength:8,
         maxlength:30
         },
