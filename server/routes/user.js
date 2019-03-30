@@ -32,8 +32,8 @@ route_user.post('/login', (req, res) => {
     console.log(req.body);
     User.find({userid: req.body.userid, password: req.body.password})
         .then((users) => {
-            if (!users) return res.status(404).send({err: 'User not found'});
-            res.send(users);
+            if (!users.length) return res.status(404).send({ auth : 0 });
+            res.send({ auth : 1 });
         })
         .catch(err => res.status(500).send(err));
 });
