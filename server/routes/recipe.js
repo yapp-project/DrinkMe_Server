@@ -3,14 +3,8 @@ const route_recipe = express.Router();
 const Recipe = require('../models/recipe.js');
 const Tag = require('../models/tag.js');
 
-// connection check
-route_recipe.get('/', (req,res) => {
-    // GET Main
-    res.json('connect Succesful : recipe');
-});
-
 // get all recipes
-route_recipe.get('/recipe', (req,res) =>{
+route_recipe.get('/', (req,res) =>{
     Recipe.find(function(err, recipes) {
         if(err) return res.status(500).send({error: 'get recipes fail'});
         res.json(recipes);
@@ -25,28 +19,29 @@ route_recipe.get('/tag', (req,res) => {
     })
 })
 // recipe register
-route_recipe.post('/recipe', (req,res) => {
+route_recipe.post('/', (req,res) => {
     const tmp = req;
-    let tmp2;
     Recipe.create(tmp.body)
-        .then( recipe => tmp2 = recipe )
         .then(recipe => res.send(recipe))
         .catch(err => res.status(500).send(err));
     let tmp3 = JSON.stringify(req.body.tag).replace('[', '').replace(']','')
     .replace('\\','').split(',')
                 .map((s)=>{return JSON.parse('{"tag" : '+s+'}')});
-    Tag.insertMany(tmp3 , (err, nTag) =>{
-        if(err) return res.status(500).send({error: 'err'});
-     //   res.send(tmp2)
-       // res.send(nTag)
+    Tag.insertMany(tmp3 ,{ordered: false} ,(err, data) =>{
     })
-    //Tag.create(req.body.tag)
-      //  .then(tag => res.send(tag))
-        //.catch(err => res.status(500).send(err));
 });
 
+// view recipe detail
+route_recipe.get('/details', (req,res) => {
+    Recipe.find({'_id' : req.body._id})
+    .exec((err, recipe) => {
+        if(err) return res.status(500).send(err)
+        return res.status(200).send(recipe)
+    })
+})
+
 // recipe search by tag order by view
-route_recipe.get('/recipe/tagv/', (req,res) => {
+route_recipe.get('/tag/view/', (req,res) => {
     Recipe.find({'tag' :  req.body.tag})
     .sort({view:-1})
     .limit(10)
@@ -57,7 +52,7 @@ route_recipe.get('/recipe/tagv/', (req,res) => {
 });
 
 // recipe search by tag order by new
-route_recipe.get('/recipe/tagn/', (req,res)=>{
+route_recipe.get('/tag/new/', (req,res)=>{
     Recipe.find({'tag' : req.body.tag})
     .sort({created_date:-1})
     .limit(10)
@@ -68,7 +63,7 @@ route_recipe.get('/recipe/tagn/', (req,res)=>{
 });
 
 // recipe search by ingredient order by view
-route_recipe.get('/recipe/ingredientv/', (req,res)=>{
+route_recipe.get('/ingredient/view/', (req,res)=>{
     Recipe.find({
         'ingredient.name' : { $all : req.body.ingredient }
     })
@@ -81,7 +76,7 @@ route_recipe.get('/recipe/ingredientv/', (req,res)=>{
 });
 
 // recipe search by ingredient order by new
-route_recipe.get('/recipe/ingredientn/', (req,res)=>{
+route_recipe.get('/ingredient/new', (req,res)=>{
     Recipe.find({
         'ingredient.name' : { $all : req.body.ingredient }
     })
@@ -94,14 +89,36 @@ route_recipe.get('/recipe/ingredientn/', (req,res)=>{
 });
 
 // tag random select
-route_recipe.get('/recipe/random/:tag', (req,res) => {
-    const Tags = Tag.sample(5);
-    Recipe.find({
-        tag : { $in : Tags }
-    })
-    .limit(5)
-    .sort({ view: 1})
-    .catch(err => res.status(500).send(err));
+route_recipe.get('/random', (req,res) => {
+    Tag.aggregate([{ $sample: {size: 5} }])
+    .then(tags => res.status(200).send(tags))
+    .catch(err => res.status(500).send(err))
+        //let list = Array()
+        //for(let i=0; i<5; i++){
+        //    list.push(tags[i]['tag'].toString())
+        //}
+        //Recipe.find({ 'tag' : { $in : list } })
+        //    .sort({ view: 1})
+        //    .then( recipes => res.status(200).send(recipes))
+        //    .catch( err => res.status(500).send(err))
+        //res.end(tags[0]['tag'].toString())
+        //Recipe.find({ 'tag' : { $in : getTag } })
+        //    .sort({ view: 1})
+        //    .then( recipes => res.status(200).send(recipes))
+        //    .catch( err => res.status(500).send(err))
+    //.then((tags) => Recipe.find({ 'tag.tag' : { $in : tags.tag }})
+    //    .sort({view: 1})
+    //    .then((recipes) => res.status(200).send(recipes))
+    //    .catch(err => res.status(500).send(err)))
+    //.catch(err => res.status(500).send(err))
+    //const Tags = Tag.sample(5);
+    //Recipe.find({
+    //    tag : { $in : Tags }
+    //})
+    //.limit(5)
+    //.sort({ view: 1})
+   //.then((recipes) => res.status(200).send(recipes))
+    //.catch(err => res.status(500).send(err));
 });
 
 
