@@ -2,6 +2,54 @@ const express = require('express');
 const route_recipe = express.Router();
 const Recipe = require('../models/recipe.js');
 const Tag = require('../models/tag.js');
+const path = require('path')
+
+// MULTER
+const multer = require('multer')
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, '../uploads/'))
+    },
+    filename: (req, file, cb) => {
+        console.log(file)
+        cb(null, file.originalname)
+    }
+})
+
+// upload image
+route_recipe.post('/upload', (req,res,next) => {
+    const upload = multer({ storage }).single('name-of-input-key')
+    upload( req, res,(err)=>{
+        if(err) res.send(err)
+   
+        console.log('file uploaded to server')
+        console.log(req.file)
+
+        // SEND FILE TO CLOUDINARY
+        const cloudinary = require('cloudinary').v2
+        cloudinary.config({
+            cloud_name: 'hjcloud',
+            api_key: '844847417597383',
+            api_secret: 'CsL6vMIHHcca6NiLPVcHnRH7CDY'
+        })
+        
+        const path = req.file.path
+        const uniqueFilename = new Date().toISOString()
+
+        cloudinary.uploader.upload(
+            path,
+            { public_id: `recipe/${uniqueFilename}`, tags: `recipe` },
+            (err, image) => {
+                if(err) return res.send(err)
+                console.log('file uploaded to Cloudinary')
+                // remove file from server
+                const fs = require('fs')
+                fs.unlinkSync(path)
+                // return image details
+                res.json(image)
+            })
+    })
+})
 
 // get all recipes
 route_recipe.get('/', (req,res) =>{
