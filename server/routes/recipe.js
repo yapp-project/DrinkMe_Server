@@ -16,6 +16,40 @@ const storage = multer.diskStorage({
     }
 })
 
+// upload multiple images
+route_recipe.post('/upload/multiple', (req,res,next) => {
+    const upload = multer({ storage }).any()
+    upload( req, res, async(err) => {
+        if(err) res.send(err)
+        const tmp = req
+        console.log('file uploaded to server')
+
+        const cloudinary = require('cloudinary').v2
+        cloudinary.config({
+            cloud_name: 'hjcloud',
+            api_key: '844847417597383',
+            api_secret: 'CsL6vMIHHcca6NiLPVcHnRH7CDY'
+        })
+
+        for(let i=0; i<(tmp.files).length; i++){
+            const path = (tmp.files[i]).path
+            console.log(path)
+            const uniqueFilename = new Date().toISOString()
+
+            cloudinary.uploader.upload(
+                path,
+                { public_id: `recipe/${uniqueFilename}`, tags: `recipe` },
+                (err, image) => {
+                    if(err) return res.send(err)
+                    console.log('file uploaded to Cloudinary')
+                    const fs = require('fs')
+                    fs.unlinkSync(path)
+            })
+        }
+        res.json({'status':1})
+    })
+})
+
 // upload image
 route_recipe.post('/upload', (req,res,next) => {
     const upload = multer({ storage }).single('name-of-input-key')
