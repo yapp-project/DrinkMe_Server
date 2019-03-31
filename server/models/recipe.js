@@ -21,6 +21,7 @@ let recipeSchema = new Schema({
   glass : { type : Number },
   percent : { type : Number },
   view : { type : Number, default : 0 },
+  scrap : { type : Number, default : 0 },
   description : String,
   tag : [{ type : String }],
   ingredient : [{type : ingredientSchema}],
