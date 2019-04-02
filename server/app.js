@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
+const cors = require('cors');
 const port = process.env.PORT || 9000; // .env 파일
 const route_user = require('./routes/user.js');
 const route_recipe = require('./routes/recipe.js');
@@ -24,6 +25,9 @@ app.engine('pug', require('pug').__express);
 app.set('view engine','pug');
 app.set('views', path.join(__dirname, 'html'));
 app.use(express.static(path.join(__dirname,'html')));
+
+// CORS 설정
+app.use(cors());
 
 app.use('/user', route_user);
 app.use('/recipe',route_recipe);
