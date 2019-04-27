@@ -26,9 +26,9 @@ route_recipe.post('/upload/multiple', (req,res,next) => {
 
         const cloudinary = require('cloudinary').v2
         cloudinary.config({
-            cloud_name: 'hjcloud',
-            api_key: '844847417597383',
-            api_secret: 'CsL6vMIHHcca6NiLPVcHnRH7CDY'
+            cloud_name: process.env.CLOUD_NAME,
+            api_key: process.env.CLOUD_API_KEY,
+            api_secret: process.env.CLOUD_SECRET
         })
 
         for(let i=0; i<(tmp.files).length; i++){
@@ -103,14 +103,16 @@ route_recipe.get('/tag', (req,res) => {
 // recipe register
 route_recipe.post('/', (req,res) => {
     const tmp = req;
+    console.log(tmp);
     Recipe.create(tmp.body)
         .then(recipe => res.send(recipe))
         .catch(err => res.status(500).send(err));
-    let tmp3 = JSON.stringify(req.body.tag).replace('[', '').replace(']','')
-    .replace('\\','').split(',')
-                .map((s)=>{return JSON.parse('{"tag" : '+s+'}')});
-    Tag.insertMany(tmp3 ,{ordered: false} ,(err, data) =>{
-    })
+    //let tmp3 = JSON.stringify(req.body.tag).replace('[', '').replace(']','')
+    //.replace('\\','').split(',')
+    //            .map((s)=>{return JSON.parse('{"tag" : '+s+'}')});
+    //Tag.insertMany(tmp3 ,{ordered: false} ,(err, data) =>{
+    Tag.insertMany(req.body.tag, {ordered: false}, (err,data) => {});
+    //})
 });
 
 // view recipe detail
