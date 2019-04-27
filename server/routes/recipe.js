@@ -62,9 +62,9 @@ route_recipe.post('/upload', (req,res,next) => {
         // SEND FILE TO CLOUDINARY
         const cloudinary = require('cloudinary').v2
         cloudinary.config({
-            cloud_name: 'hjcloud',
-            api_key: '844847417597383',
-            api_secret: 'CsL6vMIHHcca6NiLPVcHnRH7CDY'
+            cloud_name: process.env.CLOUD_NAME,
+            api_key: process.env.CLOUD_API_KEY,
+            api_secret: process.env.CLOUD_SECRET
         })
         
         const path = req.file.path
@@ -117,7 +117,9 @@ route_recipe.post('/', (req,res) => {
 
 // view recipe detail
 route_recipe.get('/details', (req,res) => {
-    Recipe.find({'_id' : req.body._id})
+    //Recipe.find({'_id' : req.body._id})
+    console.log(req)
+    Recipe.find({'_id' : req.query.id})
     .exec((err, recipe) => {
         if(err) return res.status(500).send(err)
         return res.status(200).send(recipe)
@@ -126,7 +128,7 @@ route_recipe.get('/details', (req,res) => {
 
 // recipe search by tag order by view
 route_recipe.get('/tag/view/', (req,res) => {
-    Recipe.find({'tag' :  req.body.tag})
+    Recipe.find({'tag' :  req.query.tag})
     .sort({view:-1})
     .limit(10)
     .exec((err, recipes)=>{
@@ -137,7 +139,7 @@ route_recipe.get('/tag/view/', (req,res) => {
 
 // recipe search by tag order by new
 route_recipe.get('/tag/new/', (req,res)=>{
-    Recipe.find({'tag' : req.body.tag})
+    Recipe.find({'tag' : req.query.tag})
     .sort({created_date:-1})
     .limit(10)
     .exec((err, recipes)=>{
@@ -149,7 +151,7 @@ route_recipe.get('/tag/new/', (req,res)=>{
 // recipe search by ingredient order by view
 route_recipe.get('/ingredient/view/', (req,res)=>{
     Recipe.find({
-        'ingredient.name' : { $all : req.body.ingredient }
+        'ingredient.name' : { $all : req.query.ingredient }
     })
     .limit(10)
     .sort({ view : -1 })
@@ -162,7 +164,7 @@ route_recipe.get('/ingredient/view/', (req,res)=>{
 // recipe search by ingredient order by new
 route_recipe.get('/ingredient/new', (req,res)=>{
     Recipe.find({
-        'ingredient.name' : { $all : req.body.ingredient }
+        'ingredient.name' : { $all : req.query.ingredient }
     })
     .limit(10)
     .sort({ created_date: -1})
