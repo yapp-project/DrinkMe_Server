@@ -16,10 +16,17 @@ const storage = multer.diskStorage({
     }
 })
 
+function sleep(ms){
+    return new Promise(resolve=>{
+        setTimeout(resolve, ms)
+    })
+}
+
 // upload multiple images
-route_recipe.post('/upload/multiple', (req,res,next) => {
+route_recipe.post('/upload/multiple/', async (req,res,next) => {
+    let urlArray = new Array()
     const upload = multer({ storage }).any()
-    upload( req, res, async(err) => {
+    upload(req, res, async(err) => {
         if(err) res.send(err)
         const tmp = req
         console.log('file uploaded to server')
@@ -30,24 +37,32 @@ route_recipe.post('/upload/multiple', (req,res,next) => {
             api_key: process.env.CLOUD_API_KEY,
             api_secret: process.env.CLOUD_SECRET
         })
-
-        for(let i=0; i<(tmp.files).length; i++){
+        const tmpF = async () => {for(let i=0; i<(tmp.files).length; i++){
             const path = (tmp.files[i]).path
             console.log(path)
             const uniqueFilename = new Date().toISOString()
 
-            cloudinary.uploader.upload(
+            await cloudinary.uploader.upload(
                 path,
                 { public_id: `recipe/${uniqueFilename}`, tags: `recipe` },
                 (err, image) => {
                     if(err) return res.send(err)
+                    console.log(image.url)
+                    urlArray.push(image.url)
                     console.log('file uploaded to Cloudinary')
                     const fs = require('fs')
                     fs.unlinkSync(path)
-            })
-        }
-        res.json({'status':1})
+            })/*.then(()=>{
+            if(i==(tmp.files).length-1){
+                console.log(urlArray)
+                res.send(urlArray)
+            }})*/
+        }}
+        await tmpF()
+        console.log(urlArray)
+        res.send(urlArray)
     })
+    //res.send(urlArray)
 })
 
 // upload image
