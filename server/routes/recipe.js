@@ -5,7 +5,7 @@ const Tag = require('../models/tag.js');
 const path = require('path')
 
 // MULTER
-const multer = require('multer')
+const multer = npmrequire('multer');
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(__dirname, '../uploads/'))
@@ -135,6 +135,36 @@ route_recipe.get('/ingredient/new', (req,res)=>{
         return res.status(200).send(recipes)
     })
 });
+
+// 페이징 테스트 용
+route_recipe.get('/ingredient/new/test', (req,res)=>{
+
+    var page = req.param('page');
+    if(page == null) { page = 1;}
+
+    var skipSize = (page-1) * 12;
+    var limitSize = 12;
+    var pageNum = 1;
+
+    Recipe.count({deleted:false}, function(err, totalCount) {
+
+        if (err) throw err;
+
+        pageNum = Math.ceil(totalCount/limitSize);
+        Recipe.find({
+            'ingredient.name' : { $all : req.body.ingredient }
+        })
+            .limit(10)
+            .sort({ created_date: -1})
+            .skip(skipSize)
+            .limit(limitSize)
+            .exec((err, recipes) =>{
+                if(err) return res.status(500).send(err)
+                return res.render('board', {title:"Recipe", contents: recipes, pagination: pageNum});
+            });
+    });
+});
+
 
 // tag random select
 route_recipe.get('/random', (req,res) => {
