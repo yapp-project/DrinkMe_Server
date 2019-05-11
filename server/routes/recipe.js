@@ -6,6 +6,7 @@ const path = require('path')
 
 // MULTER
 const multer = npmrequire('multer');
+const multer = require('multer');
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(__dirname, '../uploads/'))
@@ -14,6 +15,55 @@ const storage = multer.diskStorage({
         console.log(file)
         cb(null, file.originalname)
     }
+})
+
+function sleep(ms){
+    return new Promise(resolve=>{
+        setTimeout(resolve, ms)
+    })
+}
+
+// upload multiple images
+route_recipe.post('/upload/multiple/', async (req,res,next) => {
+    let urlArray = new Array()
+    const upload = multer({ storage }).any()
+    upload(req, res, async(err) => {
+        if(err) res.send(err)
+        const tmp = req
+        console.log('file uploaded to server')
+
+        const cloudinary = require('cloudinary').v2
+        cloudinary.config({
+            cloud_name: process.env.CLOUD_NAME,
+            api_key: process.env.CLOUD_API_KEY,
+            api_secret: process.env.CLOUD_SECRET
+        })
+        const tmpF = async () => {for(let i=0; i<(tmp.files).length; i++){
+            const path = (tmp.files[i]).path
+            console.log(path)
+            const uniqueFilename = new Date().toISOString()
+
+            await cloudinary.uploader.upload(
+                path,
+                { public_id: `recipe/${uniqueFilename}`, tags: `recipe` },
+                (err, image) => {
+                    if(err) return res.send(err)
+                    console.log(image.url)
+                    urlArray.push(image.url)
+                    console.log('file uploaded to Cloudinary')
+                    const fs = require('fs')
+                    fs.unlinkSync(path)
+            })/*.then(()=>{
+            if(i==(tmp.files).length-1){
+                console.log(urlArray)
+                res.send(urlArray)
+            }})*/
+        }}
+        await tmpF()
+        console.log(urlArray)
+        res.send(urlArray)
+    })
+    //res.send(urlArray)
 })
 
 // upload image
@@ -31,6 +81,9 @@ route_recipe.post('/upload', (req,res,next) => {
             cloud_name: 'hjcloud',
             api_key: '844847417597383',
             api_secret: 'CsL6vMIHHcca6NiLPVcHnRH7CDY'
+            cloud_name: process.env.CLOUD_NAME,
+            api_key: process.env.CLOUD_API_KEY,
+            api_secret: process.env.CLOUD_SECRET
         })
         
         const path = req.file.path
@@ -77,11 +130,24 @@ route_recipe.post('/', (req,res) => {
                 .map((s)=>{return JSON.parse('{"tag" : '+s+'}')});
     Tag.insertMany(tmp3 ,{ordered: false} ,(err, data) =>{
     })
+    console.log(tmp);
+    Recipe.create(tmp.body)
+        .then(recipe => res.send(recipe))
+        .catch(err => res.status(500).send(err));
+    //let tmp3 = JSON.stringify(req.body.tag).replace('[', '').replace(']','')
+    //.replace('\\','').split(',')
+    //            .map((s)=>{return JSON.parse('{"tag" : '+s+'}')});
+    //Tag.insertMany(tmp3 ,{ordered: false} ,(err, data) =>{
+    Tag.insertMany(req.body.tag, {ordered: false}, (err,data) => {});
+    //})
 });
 
 // view recipe detail
 route_recipe.get('/details', (req,res) => {
     Recipe.find({'_id' : req.body._id})
+    //Recipe.find({'_id' : req.body._id})
+    console.log(req)
+    Recipe.find({'_id' : req.query.id})
     .exec((err, recipe) => {
         if(err) return res.status(500).send(err)
         return res.status(200).send(recipe)
@@ -91,6 +157,7 @@ route_recipe.get('/details', (req,res) => {
 // recipe search by tag order by view
 route_recipe.get('/tag/view/', (req,res) => {
     Recipe.find({'tag' :  req.body.tag})
+    Recipe.find({'tag' :  req.query.tag})
     .sort({view:-1})
     .limit(10)
     .exec((err, recipes)=>{
@@ -102,6 +169,7 @@ route_recipe.get('/tag/view/', (req,res) => {
 // recipe search by tag order by new
 route_recipe.get('/tag/new/', (req,res)=>{
     Recipe.find({'tag' : req.body.tag})
+    Recipe.find({'tag' : req.query.tag})
     .sort({created_date:-1})
     .limit(10)
     .exec((err, recipes)=>{
@@ -114,6 +182,7 @@ route_recipe.get('/tag/new/', (req,res)=>{
 route_recipe.get('/ingredient/view/', (req,res)=>{
     Recipe.find({
         'ingredient.name' : { $all : req.body.ingredient }
+        'ingredient.name' : { $all : req.query.ingredient }
     })
     .limit(10)
     .sort({ view : -1 })
@@ -127,6 +196,7 @@ route_recipe.get('/ingredient/view/', (req,res)=>{
 route_recipe.get('/ingredient/new', (req,res)=>{
     Recipe.find({
         'ingredient.name' : { $all : req.body.ingredient }
+        'ingredient.name' : { $all : req.query.ingredient }
     })
     .limit(10)
     .sort({ created_date: -1})
