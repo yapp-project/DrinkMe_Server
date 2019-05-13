@@ -141,6 +141,8 @@ route_recipe.get('/details', (req,res) => {
     })
 })
 
+// not paging
+/*
 // recipe search by tag order by view
 route_recipe.get('/tag/view/', (req,res) => {
     Recipe.find({'tag' :  req.query.tag})
@@ -176,6 +178,7 @@ route_recipe.get('/ingredient/view/', (req,res)=>{
     })
 });
 
+
 // recipe search by ingredient order by new
 route_recipe.get('/ingredient/new', (req,res)=>{
     Recipe.find({
@@ -188,6 +191,142 @@ route_recipe.get('/ingredient/new', (req,res)=>{
         return res.status(200).send(recipes)
     })
 });
+*/
+
+// paging
+
+// recipe search by tag order by view
+route_recipe.get('/tag/view/', (req,res) => {
+
+    var page = req.query.page;
+    if(page == null) { page = 1;}
+
+    var skipSize = (page-1) * 12;
+    var limitSize = 12;
+    var pageNum = 1;
+
+    Recipe.countDocuments({'tag': req.query.tag }, function(err, totalCount) {
+
+        if (err) throw err;
+
+        pageNum = Math.ceil(totalCount / limitSize);
+        Recipe.find({'tag': req.query.tag})
+            .sort({ view : -1})
+            .skip(skipSize)
+            .limit(limitSize)
+            .exec((err, recipes) => {
+                if (err) return res.status(500).send(err)
+                return res.send({contents: recipes, pagination: pageNum, page:page});
+            });
+    });
+});
+
+// recipe search by tag order by new
+route_recipe.get('/tag/new/', (req,res)=>{
+
+
+    var page = req.query.page;
+    if(page == null) { page = 1;}
+
+    var skipSize = (page-1) * 12;
+    var limitSize = 12;
+    var pageNum = 1;
+
+    Recipe.countDocuments({'tag' : req.query.tag}, function(err, totalCount) {
+
+        if (err) throw err;
+
+        pageNum = Math.ceil(totalCount/limitSize);
+        Recipe.find({'tag' : req.query.tag})
+            .sort({ created_date: -1})
+            .skip(skipSize)
+            .limit(limitSize)
+            .exec((err, recipes)=>{
+            if(err) return res.status(500).send(err)
+            return res.send({contents: recipes, pagination: pageNum, page:page});
+
+        });
+    });
+});
+
+// recipe search by ingredient order by view
+route_recipe.get('/ingredient/view/', (req,res)=>{
+
+
+    var page = req.query.page;
+    if(page == null) { page = 1;}
+
+    var skipSize = (page-1) * 12;
+    var limitSize = 12;
+    var pageNum = 1;
+
+    Recipe.countDocuments({'ingredient.name' : { $all : req.query.ingredient }}, function(err, totalCount) {
+
+        if (err) throw err;
+        pageNum = Math.ceil(totalCount/limitSize);
+
+        Recipe.find({
+            'ingredient.name' : { $all : req.query.ingredient }
+        })
+        .sort({ view : -1})
+        .skip(skipSize)
+        .limit(limitSize)
+        .exec((err, recipes)=>{
+            if(err) return res.status(500).send(err)
+            return res.send({contents: recipes, pagination: pageNum, page:page});
+        });
+    });
+});
+
+// recipesearch by ingredient order by new
+route_recipe.get('/ingredient/new/', (req,res)=>{
+
+    var page = req.query.page;
+    if(page == null) { page = 1;}
+
+    var skipSize = (page-1) * 12;
+    var limitSize = 12;
+    var pageNum = 1;
+
+    Recipe.countDocuments({'ingredient.name' : {$all : req.query.ingredient}}, function(err, totalCount) {
+
+        if (err) throw err;
+
+        pageNum = Math.ceil(totalCount/limitSize);
+        Recipe.find({
+            'ingredient.name' : { $all : req.query.ingredient }
+        })
+            .sort({ created_date: -1})
+            .skip(skipSize)
+            .limit(limitSize)
+            .exec((err, recipes) =>{
+                if(err) return res.status(500).send(err)
+                return res.send({contents: recipes, pagination: pageNum, page: page});
+            });
+    });
+});
+
+// 효율적인 코드를 위해서 놓긴했는데 사용 XX
+var paging = function (bbs, pageIndex, pageUnit) {
+
+    var length = bbs.length;
+    // bbs->게시물 조회결과, pageIndex -> 현재 페이지, pageUnit -> 페이지당 게시물 단위 수 
+    if (pageIndex == '' && pageUnit =='')
+        return bbs;
+    else {
+        if(pageIndex > length / pageUnit) {
+            console.log("error no such page index " + pageIndex + "<=" + length + "/" + pageUnit);
+            return null;
+        }
+        var startIndex = (pageIndex - 1) * pageUnit;
+        var endIndex = pageIndex * pageUnit;
+        var data = [];
+        for(var i= startIndex; i<endIndex; i++) {
+            data.push(bbs[i]);
+        }
+        return data;
+    }
+}
 
 // tag random select
 route_recipe.get('/random', (req,res) => {
