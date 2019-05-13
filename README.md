@@ -36,7 +36,6 @@ Or, You can use node app.js
 and enter to `localhost:YOUR_PORT`
 
 
-
 ## 참고 사이트
 
 - DB 명령어 : https://sjh836.tistory.com/100

@@ -5,7 +5,8 @@ const Tag = require('../models/tag.js');
 const path = require('path')
 
 // MULTER
-const multer = require('multer')
+const multer = npmrequire('multer');
+const multer = require('multer');
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(__dirname, '../uploads/'))
@@ -77,6 +78,9 @@ route_recipe.post('/upload', (req,res,next) => {
         // SEND FILE TO CLOUDINARY
         const cloudinary = require('cloudinary').v2
         cloudinary.config({
+            cloud_name: 'hjcloud',
+            api_key: '844847417597383',
+            api_secret: 'CsL6vMIHHcca6NiLPVcHnRH7CDY'
             cloud_name: process.env.CLOUD_NAME,
             api_key: process.env.CLOUD_API_KEY,
             api_secret: process.env.CLOUD_SECRET
@@ -118,6 +122,14 @@ route_recipe.get('/tag', (req,res) => {
 // recipe register
 route_recipe.post('/', (req,res) => {
     const tmp = req;
+    Recipe.create(tmp.body)
+        .then(recipe => res.send(recipe))
+        .catch(err => res.status(500).send(err));
+    let tmp3 = JSON.stringify(req.body.tag).replace('[', '').replace(']','')
+    .replace('\\','').split(',')
+                .map((s)=>{return JSON.parse('{"tag" : '+s+'}')});
+    Tag.insertMany(tmp3 ,{ordered: false} ,(err, data) =>{
+    })
     console.log(tmp);
     Recipe.create(tmp.body)
         .then(recipe => res.send(recipe))
@@ -132,6 +144,7 @@ route_recipe.post('/', (req,res) => {
 
 // view recipe detail
 route_recipe.get('/details', (req,res) => {
+    Recipe.find({'_id' : req.body._id})
     //Recipe.find({'_id' : req.body._id})
     console.log(req)
     Recipe.find({'_id' : req.query.id})
@@ -145,6 +158,7 @@ route_recipe.get('/details', (req,res) => {
 /*
 // recipe search by tag order by view
 route_recipe.get('/tag/view/', (req,res) => {
+    Recipe.find({'tag' :  req.body.tag})
     Recipe.find({'tag' :  req.query.tag})
     .sort({view:-1})
     .limit(10)
@@ -156,6 +170,7 @@ route_recipe.get('/tag/view/', (req,res) => {
 
 // recipe search by tag order by new
 route_recipe.get('/tag/new/', (req,res)=>{
+    Recipe.find({'tag' : req.body.tag})
     Recipe.find({'tag' : req.query.tag})
     .sort({created_date:-1})
     .limit(10)
@@ -168,6 +183,7 @@ route_recipe.get('/tag/new/', (req,res)=>{
 // recipe search by ingredient order by view
 route_recipe.get('/ingredient/view/', (req,res)=>{
     Recipe.find({
+        'ingredient.name' : { $all : req.body.ingredient }
         'ingredient.name' : { $all : req.query.ingredient }
     })
     .limit(10)
@@ -182,6 +198,7 @@ route_recipe.get('/ingredient/view/', (req,res)=>{
 // recipe search by ingredient order by new
 route_recipe.get('/ingredient/new', (req,res)=>{
     Recipe.find({
+        'ingredient.name' : { $all : req.body.ingredient }
         'ingredient.name' : { $all : req.query.ingredient }
     })
     .limit(10)
@@ -327,6 +344,36 @@ var paging = function (bbs, pageIndex, pageUnit) {
         return data;
     }
 }
+
+// 페이징 테스트 용
+route_recipe.get('/ingredient/new/test', (req,res)=>{
+
+    var page = req.param('page');
+    if(page == null) { page = 1;}
+
+    var skipSize = (page-1) * 12;
+    var limitSize = 12;
+    var pageNum = 1;
+
+    Recipe.count({deleted:false}, function(err, totalCount) {
+
+        if (err) throw err;
+
+        pageNum = Math.ceil(totalCount/limitSize);
+        Recipe.find({
+            'ingredient.name' : { $all : req.body.ingredient }
+        })
+            .limit(10)
+            .sort({ created_date: -1})
+            .skip(skipSize)
+            .limit(limitSize)
+            .exec((err, recipes) =>{
+                if(err) return res.status(500).send(err)
+                return res.render('board', {title:"Recipe", contents: recipes, pagination: pageNum});
+            });
+    });
+});
+
 
 // tag random select
 route_recipe.get('/random', (req,res) => {
