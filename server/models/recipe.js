@@ -21,19 +21,16 @@ let recipeSchema = new Schema({
   glass : { type : Number },
   percent : { type : Number },
   view : { type : Number, default : 0 },
-<<<<<<< HEAD
   description : String,
   tag : [{ type : String }],
   ingredient : [{type : ingredientSchema}],
   image : imageSchema,
-=======
   scrap : { type : Number, default : 0 },
   description : String,
   tag : [{ type : String }],
   ingredient : [{type : ingredientSchema}],
   numIngredient : { type : Number },
   image : [{ type : String }],
->>>>>>> 19aa2177067c3a4c740743c9609854c51734ac59
   created_date : { type : Date, default : Date.now },
   owner : { type : String },
 }, { versionKey: false });

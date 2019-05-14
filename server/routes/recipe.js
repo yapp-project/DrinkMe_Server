@@ -5,7 +5,7 @@ const Tag = require('../models/tag.js');
 const path = require('path')
 
 // MULTER
-const multer = npmrequire('multer');
+//const multer = npmrequire('multer');
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -22,6 +22,18 @@ function sleep(ms){
         setTimeout(resolve, ms)
     })
 }
+
+// delete recipe
+route_recipe.get('/del/', (req, res) => {
+    console.log('why')
+    console.log(req)
+    Recipe.deleteOne({'_id' : req.query.id})
+    .exec((err, result) => {
+        if(err) return res.status(500).send(err)
+        return res.status(200).send(result)
+    })
+})
+
 
 // upload multiple images
 route_recipe.post('/upload/multiple/', async (req,res,next) => {
@@ -78,9 +90,9 @@ route_recipe.post('/upload', (req,res,next) => {
         // SEND FILE TO CLOUDINARY
         const cloudinary = require('cloudinary').v2
         cloudinary.config({
-            cloud_name: 'hjcloud',
-            api_key: '844847417597383',
-            api_secret: 'CsL6vMIHHcca6NiLPVcHnRH7CDY'
+            //cloud_name: 'hjcloud',
+            //api_key: '844847417597383',
+            //api_secret: 'CsL6vMIHHcca6NiLPVcHnRH7CDY'
             cloud_name: process.env.CLOUD_NAME,
             api_key: process.env.CLOUD_API_KEY,
             api_secret: process.env.CLOUD_SECRET
@@ -144,7 +156,7 @@ route_recipe.post('/', (req,res) => {
 
 // view recipe detail
 route_recipe.get('/details', (req,res) => {
-    Recipe.find({'_id' : req.body._id})
+    //Recipe.find({'_id' : req.body._id})
     //Recipe.find({'_id' : req.body._id})
     console.log(req)
     Recipe.find({'_id' : req.query.id})
