@@ -117,5 +117,10 @@ route_user.post('/delete/account', (req,res) => {
 	else return res.send(false);
 });
 
+route_user.get('/mypage/scrap', (req, res) => {
+    // set scrap recipe
+                    
+
+});
 
 module.exports = route_user;

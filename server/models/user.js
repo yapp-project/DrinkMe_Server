@@ -18,7 +18,8 @@ var userSchema = new Schema({
         minlength:8,
         maxlength:50
         },
-    create_date : {  type: Date, default: Date.now()  }
+    create_date : {  type: Date, default: Date.now()  },
+    scrap : [{ type : String }]
 }, { versionKey: false });
 
 

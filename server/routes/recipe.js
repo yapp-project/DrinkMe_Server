@@ -36,7 +36,7 @@ route_recipe.get('/del/', (req, res) => {
 
 
 // upload multiple images
-route_recipe.post('/upload/multiple/', async (req,res,next) => {
+route_recipe.post('/upload/', async (req,res,next) => {
     let urlArray = new Array()
     const upload = multer({ storage }).any()
     upload(req, res, async(err) => {
@@ -74,12 +74,14 @@ route_recipe.post('/upload/multiple/', async (req,res,next) => {
         await tmpF()
         console.log(urlArray)
         res.send(urlArray)
+        console.log(req.query.id)
+        Recipe.updateOne({ '_id': req.query.id }, { $addToSet: {'image': {$each : urlArray}}}).then(console.log('image added'))
     })
     //res.send(urlArray)
 })
 
 // upload image
-route_recipe.post('/upload', (req,res,next) => {
+route_recipe.post('/upload/one', (req,res,next) => {
     const upload = multer({ storage }).single('name-of-input-key')
     upload( req, res,(err)=>{
         if(err) res.send(err)
@@ -133,24 +135,39 @@ route_recipe.get('/tag', (req,res) => {
 })
 // recipe register
 route_recipe.post('/', (req,res) => {
-    const tmp = req;
-    Recipe.create(tmp.body)
-        .then(recipe => res.send(recipe))
+    const tmp = req.body;
+    newId = null
+    count = 0
+    console.log(tmp)
+    console.log(typeof(tmp))
+    //Recipe.create(tmp, ()=>{console.log('1')})
+    Recipe.create(tmp)
+        .then(recipe => {
+            console.log(recipe)
+            res.send(recipe)
+            count = recipe.ingredient.size()
+            newId= recipe._id
+            console.log(count, newId)
+            Recipe.updateOne({'_id':newId}, {$set: {'numIngredient':count}}).then(console.log('count added'))
+            })
         .catch(err => res.status(500).send(err));
-    let tmp3 = JSON.stringify(req.body.tag).replace('[', '').replace(']','')
-    .replace('\\','').split(',')
-                .map((s)=>{return JSON.parse('{"tag" : '+s+'}')});
-    Tag.insertMany(tmp3 ,{ordered: false} ,(err, data) =>{
-    })
-    console.log(tmp);
-    Recipe.create(tmp.body)
-        .then(recipe => res.send(recipe))
-        .catch(err => res.status(500).send(err));
+    
     //let tmp3 = JSON.stringify(req.body.tag).replace('[', '').replace(']','')
     //.replace('\\','').split(',')
     //            .map((s)=>{return JSON.parse('{"tag" : '+s+'}')});
     //Tag.insertMany(tmp3 ,{ordered: false} ,(err, data) =>{
-    Tag.insertMany(req.body.tag, {ordered: false}, (err,data) => {});
+    //})
+    //console.log(tmp);
+    //Recipe.create(tmp.body)
+    //    .then(recipe => res.send(recipe))
+    //    .catch(err => res.status(500).send(err));
+    //let tmp3 = JSON.stringify(req.body.tag).replace('[', '').replace(']','')
+    //.replace('\\','').split(',')
+    //            .map((s)=>{return JSON.parse('{"tag" : '+s+'}')});
+    //Tag.insertMany(tmp3 ,{ordered: false} ,(err, data) =>{
+    Tag.insertMany(tmp.tag,{ordered:false}).then(console.log('tag inserted'))
+    //Tag.insertMany(tmp.body.tag, {ordered: false}, (err,data) => {});
+    //Tag.insertMany(req.body.tag, {ordered: false}).catch(err => res.send(err))
     //})
 });
 
@@ -233,6 +250,7 @@ route_recipe.get('/tag/view/', (req,res) => {
     var skipSize = (page-1) * 12;
     var limitSize = 12;
     var pageNum = 1;
+    page = Number(page);
 
     Recipe.countDocuments({'tag': req.query.tag }, function(err, totalCount) {
 
@@ -260,6 +278,7 @@ route_recipe.get('/tag/new/', (req,res)=>{
     var skipSize = (page-1) * 12;
     var limitSize = 12;
     var pageNum = 1;
+    page = Number(page);
 
     Recipe.countDocuments({'tag' : req.query.tag}, function(err, totalCount) {
 
@@ -288,6 +307,7 @@ route_recipe.get('/ingredient/view/', (req,res)=>{
     var skipSize = (page-1) * 12;
     var limitSize = 12;
     var pageNum = 1;
+    page = Number(page);
 
     Recipe.countDocuments({'ingredient.name' : { $all : req.query.ingredient }}, function(err, totalCount) {
 
@@ -316,6 +336,7 @@ route_recipe.get('/ingredient/new/', (req,res)=>{
     var skipSize = (page-1) * 12;
     var limitSize = 12;
     var pageNum = 1;
+    page = Number(page);
 
     Recipe.countDocuments({'ingredient.name' : {$all : req.query.ingredient}}, function(err, totalCount) {
 
