@@ -25,7 +25,6 @@ function sleep(ms){
 
 // delete recipe
 route_recipe.get('/del/', (req, res) => {
-    console.log('why')
     console.log(req)
     Recipe.deleteOne({'_id' : req.query.id})
     .exec((err, result) => {
@@ -137,26 +136,25 @@ route_recipe.get('/tag', (req,res) => {
 route_recipe.post('/', (req,res) => {
     const tmp = req.body;
     newId = null
-    count = 0
-    console.log(tmp)
-    console.log(typeof(tmp))
+    count = Object.keys(tmp.ingredient).length
     //Recipe.create(tmp, ()=>{console.log('1')})
     Recipe.create(tmp)
         .then(recipe => {
+            tmp_recipe = recipe
             console.log(recipe)
-            res.send(recipe)
-            count = recipe.ingredient.size()
-            newId= recipe._id
+            console.log(tmp_recipe)
+            newId= tmp_recipe._id
             console.log(count, newId)
             Recipe.updateOne({'_id':newId}, {$set: {'numIngredient':count}}).then(console.log('count added'))
+            res.send(tmp_recipe)
             })
         .catch(err => res.status(500).send(err));
     
-    //let tmp3 = JSON.stringify(req.body.tag).replace('[', '').replace(']','')
-    //.replace('\\','').split(',')
-    //            .map((s)=>{return JSON.parse('{"tag" : '+s+'}')});
-    //Tag.insertMany(tmp3 ,{ordered: false} ,(err, data) =>{
-    //})
+    let tmp3 = JSON.stringify(tmp.tag).replace('[', '').replace(']','')
+    .replace('\\','').split(',')
+                .map((s)=>{return JSON.parse('{"tag" : '+s+'}')});
+    Tag.insertMany(tmp3 ,{ordered: false} ,(err, data) =>{
+    console.log(data)})
     //console.log(tmp);
     //Recipe.create(tmp.body)
     //    .then(recipe => res.send(recipe))
@@ -165,10 +163,40 @@ route_recipe.post('/', (req,res) => {
     //.replace('\\','').split(',')
     //            .map((s)=>{return JSON.parse('{"tag" : '+s+'}')});
     //Tag.insertMany(tmp3 ,{ordered: false} ,(err, data) =>{
-    Tag.insertMany(tmp.tag,{ordered:false}).then(console.log('tag inserted'))
+
+    //Tag.insertMany(Object(tmp.tag),{ordered:false}).then(console.log('tag inserted')).catch(err=>res.send(err))
     //Tag.insertMany(tmp.body.tag, {ordered: false}, (err,data) => {});
     //Tag.insertMany(req.body.tag, {ordered: false}).catch(err => res.send(err))
     //})
+});
+
+route_recipe.post('/test/regi', (req,res) => {
+    
+    const tmp = req.body;
+    newId = null;
+    count = 0;
+    const re= new Object();
+    Recipe.create(req.body)
+    .then(recipe => {
+        console.log(recipe);
+        re.recipe = recipe;
+        count = recipe.ingredient.size();
+        newId = recipe._id;
+ //       Recipe.updateOne({'_id':newId}, {$set: {'numIngredient':coutt}}).then(console.log('count added')).catch(err=>res.status(500).send({err:'update'}));
+//        Tag.insertMany(req.body.tag,{ordered:false}).then(console.log('tag inserted')).catch(err=>res.send({err:'tag'}));
+//        res.send(recipe)
+    })
+    .catch(err => res.status(500).send(err));
+
+    console.log(req.body.tag);
+    
+    Tag.insertMany({$arrayToObject : {$literal : req.body.tag}},{ordered:false})
+    .then( tag=> {
+        re.tag=tag;
+        console.log('tag inserted');
+        res.send(re);
+        })
+    .catch(err=>res.send(err));
 });
 
 // view recipe detail
