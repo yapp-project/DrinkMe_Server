@@ -4,6 +4,23 @@ const Recipe = require('../models/recipe.js');
 const Tag = require('../models/tag.js');
 const path = require('path')
 
+// reset
+route_recipe.get('/delete', (req, res) => {
+    
+    Recipe.remove({})
+    .then(recipe => res.send(true))
+    .catch(err => res.status(500).send(false));
+
+});
+// reset tag
+route_recipe.get('/delete/tag', (req, res) =>  {
+    Tag.remove({})
+    .then(tag => res.send(true))
+    .catch(err=>res.status(500).send(false));
+});
+
+
+
 // MULTER
 //const multer = npmrequire('multer');
 const multer = require('multer');
@@ -74,7 +91,7 @@ route_recipe.post('/upload/', async (req,res,next) => {
         console.log(urlArray)
         res.send(urlArray)
         console.log(req.query.id)
-        Recipe.updateOne({ '_id': req.query.id }, { $addToSet: {'image': {$each : urlArray}}}).then(console.log('image added'))
+        Recipe.updateOne({ '_id': req.body.id }, { $addToSet: {'image': {$each : urlArray}}}).then(console.log('image added'))
     })
     //res.send(urlArray)
 })
@@ -134,27 +151,36 @@ route_recipe.get('/tag', (req,res) => {
 })
 // recipe register
 route_recipe.post('/', (req,res) => {
-    const tmp = req.body;
-    newId = null
-    count = Object.keys(tmp.ingredient).length
+    console.log(req)
+    //console.log(req.body)
+    const tmp = req.body.data;
+    //let count = Object.keys(req.body.ingredient).length
+    let count = (tmp.ingredient).length
+    
     //Recipe.create(tmp, ()=>{console.log('1')})
     Recipe.create(tmp)
         .then(recipe => {
-            tmp_recipe = recipe
-            console.log(recipe)
-            console.log(tmp_recipe)
-            newId= tmp_recipe._id
+            newId= recipe._id
             console.log(count, newId)
             Recipe.updateOne({'_id':newId}, {$set: {'numIngredient':count}}).then(console.log('count added'))
-            res.send(tmp_recipe)
+            res.send(recipe)
             })
         .catch(err => res.status(500).send(err));
     
+    //Tag.insertMany(req.body.tag, {ordered: false}, (data)=>{
+    //    console.log(data)
+    //})
     let tmp3 = JSON.stringify(tmp.tag).replace('[', '').replace(']','')
     .replace('\\','').split(',')
-                .map((s)=>{return JSON.parse('{"tag" : '+s+'}')});
-    Tag.insertMany(tmp3 ,{ordered: false} ,(err, data) =>{
-    console.log(data)})
+                .map((s)=>{return JSON.parse('{"tag" : '+s+'}')})
+    //Tag.insertMany(JSON.stringify(req.body.tag).replace('[','')
+    //.replace(']','')
+    //.replace('\\','').split(',')
+    //.map((s)=>{return JSON.parse('{"tag" : '+s+'}')})
+    // ,{ordered: false} ,(err, data) =>{
+    //    console.log(err)
+    //    console.log(data)})
+        
     //console.log(tmp);
     //Recipe.create(tmp.body)
     //    .then(recipe => res.send(recipe))
@@ -162,12 +188,21 @@ route_recipe.post('/', (req,res) => {
     //let tmp3 = JSON.stringify(req.body.tag).replace('[', '').replace(']','')
     //.replace('\\','').split(',')
     //            .map((s)=>{return JSON.parse('{"tag" : '+s+'}')});
-    //Tag.insertMany(tmp3 ,{ordered: false} ,(err, data) =>{
+    Tag.insertMany(tmp3 ,{ordered: false} ,(err, data) =>{console.log(data)})
 
     //Tag.insertMany(Object(tmp.tag),{ordered:false}).then(console.log('tag inserted')).catch(err=>res.send(err))
     //Tag.insertMany(tmp.body.tag, {ordered: false}, (err,data) => {});
     //Tag.insertMany(req.body.tag, {ordered: false}).catch(err => res.send(err))
     //})
+});
+
+// comment register
+route_recipe.post('/comment', (req, res) => {
+    Recipe.updateOne({'_id':req.body.id}, {$push: {'comment' : req.body.comment}})
+    .then(result => {
+        console.log('comment updated')
+        res.send(result)
+    })   
 });
 
 route_recipe.post('/test/regi', (req,res) => {
@@ -203,7 +238,6 @@ route_recipe.post('/test/regi', (req,res) => {
 route_recipe.get('/details', (req,res) => {
     //Recipe.find({'_id' : req.body._id})
     //Recipe.find({'_id' : req.body._id})
-    console.log(req)
     Recipe.find({'_id' : req.query.id})
     .exec((err, recipe) => {
         if(err) return res.status(500).send(err)

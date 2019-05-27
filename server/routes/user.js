@@ -1,7 +1,16 @@
 var express = require('express');
 var route_user = express.Router();
 var User = require('../models/user.js');
+var Scrap = require('../models/scrap.js');
+var Recipe = require('../models/recipe.js');
 var crypto = require('crypto');
+
+// 유저정보 초기화
+route_user.get('/delete', (req, res) =>  {
+    User.remove({})
+    .then(user => res.send(true))
+    .catch(err => res.status(500).send(false));
+});
 
 // 연결 확인
 route_user.get('/',(req,res) => {
@@ -117,10 +126,125 @@ route_user.post('/delete/account', (req,res) => {
 	else return res.send(false);
 });
 
-route_user.get('/mypage/scrap', (req, res) => {
-    // set scrap recipe
-                    
 
-});
+// 내가 등록한 레시피
+route_user.post('/get/mypage/myrecipe',(req,res) => {
+
+    	//var length = 0;
+        Recipe.find({"owner": req.body.userid})
+			.then(myrecipe => {
+		//		length = myrecipe.length;
+		//		res.send({recipes : myrecipe, count:length})
+         		res.send(myrecipe)
+            })
+			.catch(err => res.status(500).send(err));
+    }
+);
+
+// 내가 스크랩한 레시피
+route_user.post('/get/mypage/scraps',(req,res) => {
+
+		//var length = 0;
+        Scrap.aggregate([
+			{	$match: { "userid":req.body.userid }},
+            {
+                $project: {
+                    "recipeid": {
+                        $toObjectId: "$recipeid"
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: "recipes",
+                    localField: "recipeid",
+                    foreignField: "_id",
+                    as: "scraps"
+                }
+            }
+        ])
+            .then(scraps => {
+         //       length = scraps.length;
+         //   	res.send({recipes : scraps, count:length})
+				res.send(scraps)
+            })
+            .catch(err => res.status(500).send(err));
+    }
+);
+
+
+// 게시글 당 스크랩 갯수반환
+route_user.post('/get/scrap/counts',(req,res) => {
+
+        var length = 0;
+        Scrap.aggregate([
+            {	$match: { "recipeid":req.body.recipeid }},
+            {
+                $project: {
+                    "recipeid": {
+                        $toObjectId: "$recipeid"
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: "recipes",
+                    localField: "recipeid",
+                    foreignField: "_id",
+                    as: "scraps"
+                }
+            }
+        ])
+            .then(scraps => {
+            	length = scraps.length;
+            	res.send({count:length})
+                //res.send(scraps)
+            })
+            .catch(err => res.status(500).send(err));
+    }
+);
+
+// 스크랩 되어 있는지지 여부
+route_user.post('/status/scrap', (req, res) =>
+
+    Scrap.find({ 'userid' : req.body.userid, 'recipeid' : req.body.recipeid })
+        .then(scraps => {
+            if (scraps.length)
+            	res.send(true)
+             else
+                res.send(false)
+        })
+        .catch(err=> res.status(500).send({err:err}))
+);a
+
+// 스크랩 되어있으면 삭제, 없으면 등록
+route_user.post('/update/scrap', (req, res) =>
+
+    Scrap.find({ 'userid' : req.body.userid, 'recipeid' : req.body.recipeid })
+        .then(scraps => {
+            if (scraps.length) {
+                // 이미 등록되어 있는 스크랩이므로 삭제
+                Scrap.deleteOne({ 'userid' : req.body.userid, 'recipeid' : req.body.recipeid})
+                    .then(scraps => {
+                        console.log("here3");
+                        res.send({ 'result' : true, 'status': 'delete'})
+                    })
+                    .catch(err=> res.status(500).send(false))
+            } else {
+                Scrap.create(req.body)
+                    .then(scrap => {
+                            console.log("here4");
+                            res.send({'result':true, 'status': 'save'})
+                        }
+                    )
+                    .catch(err => res.status(500).send(false))
+            }
+        })
+        .catch(err=> res.status(500).send(false))
+);
+
+
+
+
 
 module.exports = route_user;

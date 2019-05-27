@@ -8,6 +8,14 @@ let ingredientSchema = new Schema({
   name : { type : String  },
   color : { type : String },
   ml : { type : Number },
+  ratio : { type : Number },
+}, { versionKey: false})
+
+// comment schema definition
+let commentSchema = new Schema({
+    nick: {type : String },
+    content: {type : String },
+    time: {type : String}
 }, { versionKey: false})
 
 // image schema definition
@@ -29,6 +37,7 @@ let recipeSchema = new Schema({
   image : [{ type : String }],
   created_date : { type : Date, default : Date.now },
   owner : { type : String },
+  comment : [{type : commentSchema}]
 }, { versionKey: false });
 
 // recipeShema.index({ view : 1, tag : 1 })
