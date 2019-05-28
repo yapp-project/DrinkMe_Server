@@ -58,6 +58,8 @@ route_recipe.post('/upload/', async (req,res,next) => {
     upload(req, res, async(err) => {
         if(err) res.send(err)
         const tmp = req
+        //console.log(tmp.files)
+        //console.log(tmp.files[(tmp.files).length-1])
         console.log('file uploaded to server')
 
         const cloudinary = require('cloudinary').v2
@@ -91,7 +93,7 @@ route_recipe.post('/upload/', async (req,res,next) => {
         console.log(urlArray)
         res.send(urlArray)
         console.log(req)
-        Recipe.updateOne({ '_id': req.params.id }, { $addToSet: {'image': {$each : urlArray}}}).then(console.log('image added'))
+        Recipe.updateOne({ '_id': tmp.body.id }, { $addToSet: {'image': {$each : urlArray}}}).then(console.log('image added'))
     })
     //res.send(urlArray)
 })
