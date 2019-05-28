@@ -176,6 +176,14 @@ route_user.post('/get/mypage/scraps',(req,res) => {
 // 게시글 당 스크랩 갯수반환
 route_user.post('/get/scrap/counts',(req,res) => {
 
+        Scrap.countDocuments({"recipeid": req.body.recipeid})
+            .then(counts => {
+                res.status(200).send({count: counts})
+            })
+            .catch(err => res.status(500).send(err));
+
+
+/*
         var length = 0;
         Scrap.aggregate([
             {	$match: { "recipeid":req.body.recipeid }},
@@ -201,7 +209,7 @@ route_user.post('/get/scrap/counts',(req,res) => {
                 //res.send(scraps)
             })
             .catch(err => res.status(500).send(err));
-    }
+ */   }
 );
 
 // 스크랩 되어 있는지지 여부
@@ -215,7 +223,7 @@ route_user.post('/status/scrap', (req, res) =>
                 res.send(false)
         })
         .catch(err=> res.status(500).send({err:err}))
-);a
+);
 
 // 스크랩 되어있으면 삭제, 없으면 등록
 route_user.post('/update/scrap', (req, res) =>

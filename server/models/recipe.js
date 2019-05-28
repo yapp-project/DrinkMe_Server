@@ -14,7 +14,7 @@ let ingredientSchema = new Schema({
 // comment schema definition
 let commentSchema = new Schema({
     nick: {type : String },
-    content: {type : String },
+    comment: {type : String },
     time: {type : String}
 }, { versionKey: false})
 

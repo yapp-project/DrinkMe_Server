@@ -90,8 +90,8 @@ route_recipe.post('/upload/', async (req,res,next) => {
         await tmpF()
         console.log(urlArray)
         res.send(urlArray)
-        console.log(req.query.id)
-        Recipe.updateOne({ '_id': req.body.id }, { $addToSet: {'image': {$each : urlArray}}}).then(console.log('image added'))
+        console.log(req)
+        Recipe.updateOne({ '_id': req.params.id }, { $addToSet: {'image': {$each : urlArray}}}).then(console.log('image added'))
     })
     //res.send(urlArray)
 })
@@ -198,7 +198,8 @@ route_recipe.post('/', (req,res) => {
 
 // comment register
 route_recipe.post('/comment', (req, res) => {
-    Recipe.updateOne({'_id':req.body.id}, {$push: {'comment' : req.body.comment}})
+    //console.log(req)
+    Recipe.updateOne({'_id':req.body.comment.id}, {$push: {'comment' : req.body.comment.comment}})
     .then(result => {
         console.log('comment updated')
         res.send(result)
